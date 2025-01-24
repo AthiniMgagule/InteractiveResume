@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Athini Mgagule - Portfolio</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <style>
+    /* Reset and Base Styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Arial', sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background-color: #f4f4f4;
+    }
+
+
+    /* Header Styles with Typing Effect */
+    header {
+      background: linear-gradient(135deg, #7a4cc3, #b788f7);
+      color: white;
+      text-align: center;
+      padding: 4rem 1rem;
+      position: relative;
+    }
+    .typed-title {
+      display: inline-block;
+      position: relative;
+    }
+    .typed-title::after {
+      content: '|';
+      animation: blink 0.7s infinite;
+    }
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+
+    /* Navigation */
+    nav {
+      background-color: rgba(255, 255, 255, 0.1);
+      padding: 1rem;
+      border-radius: 5px;
+    }
+    nav ul {
+      list-style: none;
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+    }
+    nav ul li a {
+      color: white;
+      text-decoration: none;
+      font-weight: bold;
+      transition: color 0.3s ease;
+    }
+    nav ul li a:hover {
+      color: #f0e6ff;
+    }
+
+    /* Sections */
+    .section {
+      max-width: 1200px;
+      margin: 3rem auto;
+      padding: 2rem;
+      background-color: white;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      border-radius: 10px;
+    }
+
+    /* About Section */
+    #about {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+    }
+    .profile-image {
+      width: 250px;
+      height: 250px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 4px solid #7a4cc3;
+    }
+
+    /* Skills Section */
+    .skills-container {
+      display: flex;
+      justify-content: space-between;
+    }
+    .skills-column {
+      width: 45%;
+    }
+    .skill-bar {
+      background-color: #f0f0f0;
+      border-radius: 10px;
+      margin-bottom: 1rem;
+    }
+    .skill-bar-fill {
+      height: 25px;
+      background-color: #7a4cc3;
+      border-radius: 10px;
+      transition: width 1.5s ease;
+    }
+
+    .timeline {
+      position: relative;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    .timeline-container {
+      position: relative;
+      width: 100%;
+      padding: 10px 40px;
+    }
+    .timeline-container::before {
+      content: '';
+      position: absolute;
+      width: 4px;
+      background-color: #7a4cc3;
+      top: 0;
+      bottom: 0;
+      left: 0;
+    }
+    .timeline-item {
+      position: relative;
+      padding: 20px;
+      background-color: #f9f5ff;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      border: 2px solid #7a4cc3;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background-color: #7a4cc3;
+      border-radius: 50%;
+      left: -42px;
+      top: 30px;
+      border: 4px solid white;
+    }
+    .timeline-item:hover {
+      transform: scale(1.03);
+      box-shadow: 0 5px 15px rgba(122,76,195,0.2);
+    }
+    .timeline-details {
+      display: none;
+      margin-top: 15px;
+      padding: 15px;
+      background-color: #f0e6ff;
+      border-radius: 8px;
+    }
+    .timeline-item.active .timeline-details {
+      display: block;
+    }
+    .timeline-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .timeline-expand {
+      background: none;
+      border: none;
+      color: #7a4cc3;
+      font-size: 1.2rem;
+      cursor: pointer;
+    }
+    .modules-list {
+      columns: 2;
+      list-style-type: disc;
+      padding-left: 20px;
+    }
+    .achievements-list {
+      list-style-type: none;
+      padding: 0;
+    }
+    .achievements-list li {
+      margin-bottom: 10px;
+      padding-left: 20px;
+      position: relative;
+    }
+    .achievements-list li::before {
+      content: '✓';
+      color: #7a4cc3;
+      position: absolute;
+      left: 0;
+    }
+    @keyframes slideIn {
+      from { 
+        opacity: 0; 
+        transform: translateX(-50px); 
+      }
+      to { 
+        opacity: 1; 
+        transform: translateX(0); 
+      }
+    }
+    .timeline-item {
+      animation: slideIn 0.8s ease forwards;
+      opacity: 0;
+      animation-delay: calc(var(--delay) * 0.2s);
+    }
+
+    /* Projects */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+    .project-card {
+      background-color: #f9f5ff;
+      border: 2px solid #7a4cc3;
+      border-radius: 10px;
+      padding: 1.5rem;
+      text-align: center;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    .project-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 20px rgba(122, 76, 195, 0.2);
+    }
+
+    /* Contact Section */
+    .contact-icons {
+      display: flex;
+      justify-content: center;
+      gap: 2rem;
+      margin-top: 2rem;
+    }
+    .contact-icon {
+      color: #7a4cc3;
+      font-size: 2.5rem;
+      transition: transform 0.3s;
+    }
+    .contact-icon:hover {
+      transform: scale(1.2);
+    }
+
+    .projects-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+    .project-card {
+      perspective: 1000px;
+      height: 350px;
+    }
+    .project-card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      transition: transform 0.8s;
+      transform-style: preserve-3d;
+      cursor: pointer;
+    }
+    .project-card:hover .project-card-inner {
+      transform: rotateY(180deg);
+    }
+    .project-card-front, .project-card-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      border-radius: 10px;
+      padding: 1.5rem;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    }
+    .project-card-front {
+      background-color: #f9f5ff;
+      border: 2px solid #7a4cc3;
+    }
+    .project-card-back {
+      background-color: #7a4cc3;
+      color: white;
+      transform: rotateY(180deg);
+      text-align: left;
+    }
+    .tech-tags {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-top: 1rem;
+    }
+    .tech-tag {
+      background-color: rgba(255,255,255,0.2);
+      padding: 0.3rem 0.6rem;
+      border-radius: 15px;
+      font-size: 0.8rem;
+    }
+    .project-links {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .project-links a {
+      color: white;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1><span class="typed-title">Athini Mgagule</span></h1>
+    <p>A Result-Driven Computer Science Graduate</p>
+    <nav>
+      <ul>
+        <li><a href="#about">About</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#timeline">Experience</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <section id="about" class="section">
+    <img src="myimage.jpg" alt="Athini Mgagule" class="profile-image">
+    <div>
+      <h2>About Me</h2>
+      <p>I am a passionate Computer Science graduate with a strong drive to create innovative technological solutions. My expertise lies in developing robust software applications, with a particular focus on system design and problem-solving.</p>
+    </div>
+  </section>
+
+  <section id="skills" class="section">
+    <h2>Skills</h2>
+    <div class="skills-container">
+      <div class="skills-column">
+        <h3>Hard Skills</h3>
+        <div class="skill-bar">
+          <div class="skill-bar-fill" style="width: 90%;">Python</div>
+        </div>
+        <div class="skill-bar">
+          <div class="skill-bar-fill" style="width: 85%;">JavaScript</div>
+        </div>
+        <div class="skill-bar">
+          <div class="skill-bar-fill" style="width: 80%;">System Design</div>
+        </div>
+      </div>
+      <div class="skills-column">
+        <h3>Soft Skills</h3>
+        <div class="skill-bar">
+          <div class="skill-bar-fill" style="width: 95%;">Problem Solving</div>
+        </div>
+        <div class="skill-bar">
+          <div class="skill-bar-fill" style="width: 90%;">Team Collaboration</div>
+        </div>
+        <div class="skill-bar">
+          <div class="skill-bar-fill" style="width: 85%;">Communication</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="timeline" class="section">
+    <h2>Experience Timeline</h2>
+    <div class="timeline">
+      <div class="timeline-container">
+        <div class="timeline-item">
+          <div class="timeline-header">
+            <h3>University of Witwatersrand</h3>
+            <button class="timeline-expand" aria-label="Expand details">
+              <i class="fas fa-chevron-down"></i>
+            </button>
+          </div>
+          <p>BSc Computer Science (2022 - 2024)</p>
+          <div class="timeline-details">
+            <h4>Key Modules</h4>
+            <ul class="modules-list">
+              <li>Advanced Algorithms</li>
+              <li>Machine Learning</li>
+              <li>Data Structures</li>
+              <li>Software Engineering</li>
+              <li>Computer Networks</li>
+              <li>Database Systems</li>
+              <li>Artificial Intelligence</li>
+              <li>System Programming</li>
+            </ul>
+
+            <h4>Academic Achievements</h4>
+            <ul class="achievements-list">
+              <li>Graduated with Distinction (70% Average)</li>
+              <li>Dean's List - 3 consecutive semesters</li>
+              <li>Research Project on Secure Communication Protocols</li>
+              <li>Participated in Hackathons and Tech Conferences</li>
+            </ul>
+
+            <h4>Extracurricular Activities</h4>
+            <ul class="achievements-list">
+              <li>Computer Science Student Association - Active Member</li>
+              <li>Peer Tutoring Program Volunteer</li>
+              <li>Tech Innovation Workshop Organizer</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-header">
+            <h3>FundX Project Lead</h3>
+            <button class="timeline-expand" aria-label="Expand details">
+              <i class="fas fa-chevron-down"></i>
+            </button>
+          </div>
+          <p>Web App Development (2024)</p>
+          <div class="timeline-details">
+            <h4>Project Responsibilities</h4>
+            <ul class="achievements-list">
+              <li>Led a team of 3 developers</li>
+              <li>Designed full-stack architecture</li>
+              <li>Implemented user authentication</li>
+              <li>Developed funding opportunity tracking system</li>
+            </ul>
+
+            <h4>Technical Achievements</h4>
+            <ul class="achievements-list">
+              <li>Reduced data retrieval time by 40%</li>
+              <li>Implemented secure REST APIs</li>
+              <li>Created responsive, mobile-friendly interface</li>
+            </ul>
+
+            <h4>Technologies Used</h4>
+            <ul class="modules-list">
+              <li>Django</li>
+              <li>PostgreSQL</li>
+              <li>React</li>
+              <li>Docker</li>
+              <li>JWT Authentication</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="timeline-item">
+          <div class="timeline-header">
+            <h3>Witshell Project</h3>
+            <button class="timeline-expand" aria-label="Expand details">
+              <i class="fas fa-chevron-down"></i>
+            </button>
+          </div>
+          <p>System Programming Project (2024)</p>
+          <div class="timeline-details">
+            <h4>Project Scope</h4>
+            <ul class="achievements-list">
+              <li>Developed a custom Unix-like shell</li>
+              <li>Implemented core shell functionalities</li>
+              <li>Created custom command interpreters</li>
+            </ul>
+
+            <h4>Technical Challenges Solved</h4>
+            <ul class="achievements-list">
+              <li>Process management</li>
+              <li>Pipe implementation</li>
+              <li>Signal handling</li>
+              <li>Custom command parsing</li>
+            </ul>
+
+            <h4>Technologies and Skills</h4>
+            <ul class="modules-list">
+              <li>C Programming</li>
+              <li>System Calls</li>
+              <li>Linux Kernel Interactions</li>
+              <li>Process Management</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="projects" class="section">
+    <h2>Projects</h2>
+    <div class="projects-grid">
+      <div class="project-card">
+        <div class="project-card-inner">
+          <div class="project-card-front">
+            <h3>Secure Shellbox Chat</h3>
+            <p>Real-time secure chat application</p>
+            <div class="tech-tags">
+              <span class="tech-tag">Python</span>
+              <span class="tech-tag">WebSockets</span>
+              <span class="tech-tag">Encryption</span>
+            </div>
+          </div>
+          <div class="project-card-back">
+            <h3>Secure Shellbox Chat</h3>
+            <p>End-to-end encrypted messaging platform with real-time communication capabilities.</p>
+            <div class="project-links">
+              <a href="#" target="_blank">
+                <i class="fab fa-github"></i> GitHub
+              </a>
+              <a href="#" target="_blank">
+                <i class="fas fa-external-link-alt"></i> Demo
+              </a>
+            </div>
+            <div class="tech-tags">
+              <span class="tech-tag">Python</span>
+              <span class="tech-tag">WebSockets</span>
+              <span class="tech-tag">Encryption</span>
+              <span class="tech-tag">Flask</span>
+              <span class="tech-tag">Socket.IO</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-card-inner">
+          <div class="project-card-front">
+            <h3>Novica</h3>
+            <p>Writer's content management platform</p>
+            <div class="tech-tags">
+              <span class="tech-tag">JavaScript</span>
+              <span class="tech-tag">React</span>
+              <span class="tech-tag">Security</span>
+            </div>
+          </div>
+          <div class="project-card-back">
+            <h3>Novica</h3>
+            <p>Innovative platform helping writers organize, protect, and manage their intellectual property with advanced security features.</p>
+            <div class="project-links">
+              <a href="#" target="_blank">
+                <i class="fab fa-github"></i> GitHub
+              </a>
+              <a href="#" target="_blank">
+                <i class="fas fa-external-link-alt"></i> Live Site
+              </a>
+            </div>
+            <div class="tech-tags">
+              <span class="tech-tag">React</span>
+              <span class="tech-tag">Node.js</span>
+              <span class="tech-tag">MongoDB</span>
+              <span class="tech-tag">JWT</span>
+              <span class="tech-tag">Encryption</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-card">
+        <div class="project-card-inner">
+          <div class="project-card-front">
+            <h3>FundX</h3>
+            <p>Funding opportunities management</p>
+            <div class="tech-tags">
+              <span class="tech-tag">Web Dev</span>
+              <span class="tech-tag">Django</span>
+              <span class="tech-tag">Database</span>
+            </div>
+          </div>
+          <div class="project-card-back">
+            <h3>FundX</h3>
+            <p>Web application streamlining the discovery, tracking, and management of funding opportunities for students and researchers.</p>
+            <div class="project-links">
+              <a href="#" target="_blank">
+                <i class="fab fa-github"></i> GitHub
+              </a>
+              <a href="#" target="_blank">
+                <i class="fas fa-external-link-alt"></i> Prototype
+              </a>
+            </div>
+            <div class="tech-tags">
+              <span class="tech-tag">Django</span>
+              <span class="tech-tag">PostgreSQL</span>
+              <span class="tech-tag">Python</span>
+              <span class="tech-tag">REST API</span>
+              <span class="tech-tag">Bootstrap</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" class="section">
+    <h2>Contact Me</h2>
+    <div class="contact-icons">
+      <a href="mailto:athini.mgagule@example.com" class="contact-icon">
+        <i class="fas fa-envelope"></i>
+      </a>
+      <a href="https://linkedin.com/in/athini-mgagule-8b8b362b2" class="contact-icon" target="_blank">
+        <i class="fab fa-linkedin"></i>
+      </a>
+      <a href="https://github.com/AthiniMgagule" class="contact-icon" target="_blank">
+        <i class="fab fa-github"></i>
+      </a>
+    </div>
+  </section>
+
+  <script>
+    document.querySelectorAll('.timeline-item').forEach((item, index) => {
+      item.style.setProperty('--delay', index);
+    });
+    
+    document.querySelectorAll('.timeline-item').forEach(item => {
+      const expandButton = item.querySelector('.timeline-expand');
+      expandButton.addEventListener('click', () => {
+        item.classList.toggle('active');
+        const icon = expandButton.querySelector('i');
+        icon.classList.toggle('fa-chevron-down');
+        icon.classList.toggle('fa-chevron-up');
+      });
+    });
+  </script>
+</body>
+</html>
