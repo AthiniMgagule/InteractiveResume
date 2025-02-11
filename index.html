@@ -1,465 +1,723 @@
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Athini Mgagule - Portfolio</title>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="styles/style.css">
-  <script src="scripts/script.js"></script>
-</head>
-<body>
-  <header>
-    <h1><span class="typed-title">Athini Mgagule</span></h1>
-    <p>Computer Science Graduand | Aspiring Data Analyst</p><br>
-    <nav>
-      <ul>
-        <li><a href="#about">About</a></li>
-        <li><a href="#skills">Skills</a></li>
-        <li><a href="#timeline">Timeline</a></li>
-        <li><a href="#projects">Projects</a></li>
-        <li><a href="#contact">Contact</a></li>
-      </ul>
-    </nav>
-  </header>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="discription" content="Athini Mgagule - Software Developer portfolio showcasing projects in web development, data analysis, and cybersecurity">
+        <meta name="keywords" content="software developer, web development, data analysis, cybersecurity, portfolio">
+        <meta property="og:title" content="Athini Mgagule - Software Developer Portfolio">
+        <meta property="og:description" content="Experienced SOftware Developer specializing in web development, data analysis, and cybersecurity">
+        <meta property="og:image" content="assets/myimage.jpg">
 
-  <section id="about" class="section">
-    <img src="myimage.jpg" alt="Athini Mgagule" class="profile-image">
-    <div>
-      <h2>About Me</h2>
-      <p>I am a passionate Computer Science graduate with a strong drive to create innovative technological solutions. My expertise lies in developing robust software applications, with a particular focus on system design and problem-solving.</p>
-    </div>
-  </section>
+        <title>Athini Mgagule - Portfolio</title>
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="styles/style.css">
+        <script src="scripts/script.js"></script>
+    </head>
 
-  <section id="skills" class="section">
-    <h2>Skills</h2>
-    <div class="skills-container">
-      <div class="skills-column">
-        <h3>Hard Skills</h3>
-        <div class="skill-bar">
-          <div class="skill-bar-fill" style="width: 90%; padding-left:20px;">Python</div>
-        </div>
-        <div class="skill-bar">
-          <div class="skill-bar-fill" style="width: 70%; padding-left:20px;">Java</div>
-        </div>
-        <div class="skill-bar">
-          <div class="skill-bar-fill" style="width: 60%; padding-left:20px;">Lua</div>
-        </div>
-        <div class="skill-bar">
-          <div class="skill-bar-fill" style="width: 80%; padding-left:20px;">C++</div>
-        </div>
-        <div class="skill-bar">
-          <div class="skill-bar-fill" style="width: 75%; padding-left:20px;">C</div>
-        </div>
-        <div class="skill-bar">
-          <div class="skill-bar-fill" style="width: 80%; padding-left:20px;">JavaScript</div>
-        </div>
-        <div class="skill-bar">
-          <div class="skill-bar-fill" style="width: 96%; padding-left:20px;">HTML</div>
-        </div>
-        <div class="skill-bar">
-          <div class="skill-bar-fill" style="width: 100%; padding-left:20px;">CSS</div>
-        </div>
-        <div class="skill-bar">
-          <div class="skill-bar-fill" style="width: 85%; padding-left:20px;">RESTAPIs</div>
-        </div>
-        <div class="skill-bar">
-          <div class="skill-bar-fill" style="width: 90%; padding-left:20px;">MySQL</div>
-        </div>
-        <div class="skill-bar">
-          <div class="skill-bar-fill" style="width: 100%; padding-left:20px;">SQLite3</div>
-        </div>
-        <div class="skill-bar">
-          <div class="skill-bar-fill" style="width: 80%; padding-left:20px;">Node.js</div>
-        </div>
-      </div>
-      <div class="skills-column">
-        <h3>Soft Skills</h3>
-        <div class="skill-bar">
-          <div class="skill-bar-fill" style="width: 90%; padding-left:20px;">Creative Thinking</div>
-        </div>
-        <div class="skill-bar">
-          <div class="skill-bar-fill" style="width: 95%; padding-left:20px;">Analytical Thinking</div>
-        </div>
-        <div class="skill-bar">
-          <div class="skill-bar-fill" style="width: 85%; padding-left:20px;">Problem Solving</div>
-        </div>
-        <div class="skill-bar">
-          <div class="skill-bar-fill" style="width: 80%; padding-left:20px;">Adaptability</div>
-        </div>
-        <div class="skill-bar">
-          <div class="skill-bar-fill" style="width: 80%; padding-left:20px;">Detail Oriented</div>
-        </div>
-        <div class="skill-bar">
-          <div class="skill-bar-fill" style="width: 70%; padding-left:20px;">Team Player</div>
-        </div>
-        <div class="skill-bar">
-          <div class="skill-bar-fill" style="width: 100%; padding-left:20px;">Time Management</div>
-        </div>
-      </div>
-    </div>
-  </section>
+    <style>
+        /* About Section Styles */
+        .about-content {
+        display: flex;
+        gap: 3rem;
+        align-items: center;
+        padding: 2rem 0;
+        }
 
-  <section id="timeline" class="section">
-    <h2>Timeline</h2>
-    <div class="timeline">
-      <div class="timeline-container">
-        <div class="timeline-item">
-          <div class="timeline-header">
-            <h3>University of Witwatersrand</h3>
-            <button class="timeline-expand" aria-label="Expand details">
-              <i class="fas fa-chevron-down"></i>
-            </button>
-          </div>
-          <p>BSc Computer Science (2022 - 2024)</p>
-          <div class="timeline-details">
-            <h4>Key Modules</h4>
-            <ul class="modules-list">
-              <li>Advanced Analysis of Algorithms</li>
-              <li>Software Design</li>
-              <li>Introduction to Data Structures and Algorithms</li>
-              <li>Database Fundamentals</li>
-              <li>Mobile Computing</li>
-              <li>Software Engineering</li>
-              <li>Computer Networks</li>
-              <li>Formal Languages and Automata</li>
-              <li>Artificial Intelligence</li>
-              <li>Operating Systems and System Programming</li>
-            </ul>
+        .profile-image-container {
+        flex-shrink: 0;
+        position: relative;
+        }
 
-            <h4>Academic Achievements</h4>
-            <ul class="achievements-list">
-              <li>Graduated with 70% Cumulative Average</li>
-              <li>Lead a successful software development project</li>
-            </ul>
+        .profile-image {
+        width: 300px;
+        height: 300px;
+        border-radius: 20px;
+        object-fit: cover;
+        border: 4px solid #7a4cc3;
+        transition: transform 0.3s ease;
+        }
 
-            <h4>Extracurricular Activities</h4>
-            <ul class="achievements-list">
-              <li>Invigilated modules in Applied Mathematics</li>
-              <li>Peer Tutoring Program Volunteer</li>
-            </ul>
-          </div>
+        .profile-image:hover {
+        transform: scale(1.02);
+        }
+
+        .about-text {
+        flex: 1;
+        }
+
+        .about-text p {
+        font-size: 1.1rem;
+        line-height: 1.8;
+        color: #333;
+        margin-bottom: 2rem;
+        }
+
+        .about-highlights {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 2rem;
+        margin: 2rem 0;
+        }
+
+        .highlight-item {
+        background: linear-gradient(145deg, #f9f5ff, #ffffff);
+        padding: 1.5rem;
+        border-radius: 15px;
+        box-shadow: 0 4px 15px rgba(122, 76, 195, 0.1);
+        transition: transform 0.3s ease;
+        }
+
+        .highlight-item:hover {
+        transform: translateY(-5px);
+        }
+
+        .highlight-item i {
+        font-size: 2rem;
+        color: #7a4cc3;
+        margin-bottom: 1rem;
+        }
+
+        .highlight-item h3 {
+        font-size: 1.2rem;
+        color: #333;
+        margin-bottom: 0.5rem;
+        }
+
+        .highlight-item p {
+        font-size: 1rem;
+        color: #666;
+        margin: 0.25rem 0;
+        }
+
+        .download-resume {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        background: #7a4cc3;
+        color: white;
+        padding: 0.8rem 1.5rem;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: 500;
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+        }
+
+        .download-resume:hover {
+        background: white;
+        color: #7a4cc3;
+        border-color: #7a4cc3;
+        }
+
+        .download-resume i {
+        font-size: 1.2rem;
+        }
+
+        /* Dark Mode Styles */
+        [data-theme="dark"] .about-text p {
+        color: #f4f4f4;
+        }
+
+        [data-theme="dark"] .highlight-item {
+        background: linear-gradient(145deg, #2a2a2a, #333333);
+        }
+
+        [data-theme="dark"] .highlight-item h3 {
+        color: #f4f4f4;
+        }
+
+        [data-theme="dark"] .highlight-item p {
+        color: #ddd;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+        .about-content {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .profile-image {
+            width: 250px;
+            height: 250px;
+            margin-bottom: 2rem;
+        }
+
+        .about-highlights {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        }
+
+        @media (max-width: 576px) {
+        .about-highlights {
+            grid-template-columns: 1fr;
+        }
+
+        .profile-image {
+            width: 200px;
+            height: 200px;
+        }
+
+        .about-text p {
+            font-size: 1rem;
+            line-height: 1.6;
+        }
+        }
+
+
+
+        .project-slider {
+          position: relative;
+          width: 100%;
+          max-width: 1200px;
+          margin: 0 auto;
+          padding: 20px 0;
+        }
+        
+        .slider-arrow {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: #7a4cc3;
+          color: white;
+          border: none;
+          cursor: pointer;
+          z-index: 10;
+          transition: background-color 0.3s;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        
+        .slider-arrow:hover {
+          background: #b788f7;
+        }
+        
+        .prev-arrow { left: -20px; }
+        .next-arrow { right: -20px; }
+        
+        .projects-container {
+          display: flex;
+          transition: transform 0.5s ease;
+        }
+        
+        .project-card {
+          min-width: 100%;
+          opacity: 0;
+          transition: opacity 0.5s ease;
+          pointer-events: none;
+        }
+        
+        .project-card.active {
+          opacity: 1;
+          pointer-events: auto;
+        }
+        
+        .slider-dots {
+          display: flex;
+          justify-content: center;
+          gap: 10px;
+          margin-top: 20px;
+        }
+        
+        .dot {
+          width: 12px;
+          height: 12px;
+          border-radius: 50%;
+          background: #ddd;
+          border: none;
+          cursor: pointer;
+          transition: background-color 0.3s;
+        }
+        
+        .dot.active {
+          background: #7a4cc3;
+        }
+        
+        .project-card-inner {
+          height: 400px;
+        }
+        
+        .tech-tags {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+          margin-top: 15px;
+        }
+        
+        .tech-tag {
+          padding: 6px 12px;
+          border-radius: 20px;
+          background: rgba(122, 76, 195, 0.1);
+          color: #7a4cc3;
+          font-size: 0.9rem;
+        }
+        
+        .tech-tag.highlight {
+          background: #7a4cc3;
+          color: white;
+        }
+        
+        .project-links {
+          display: flex;
+          gap: 15px;
+          margin-top: 20px;
+        }
+        
+        .btn {
+          padding: 10px 20px;
+          border-radius: 8px;
+          text-decoration: none;
+          color: white;
+          background: #7a4cc3;
+          transition: background-color 0.3s;
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+        
+        .btn:hover {
+          background: #b788f7;
+        }
+        
+        @media (max-width: 768px) {
+          .slider-arrow {
+            display: none;
+          }
+          
+          .project-card-inner {
+            height: 350px;
+          }
+        }
+
+        .container{
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .cursor{
+            display : inline-block;
+            width: 5px;
+            height:20px;
+            background: white;
+            animation: blink 0.7s infinite;
+        }
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+    </style>
+
+    <body>
+        <!-- Add after opening body tag -->
+        <button class="theme-toggle" aria-label="Toggle dark mode">
+            <i class="fas fa-moon"></i>
+        </button>
+
+        <div class="progress-bar">
+            <div class="progress-fill"></div>
         </div>
 
-        <div class="timeline-item">
-          <div class="timeline-header">
-            <h3>Witshell Project</h3>
-            <button class="timeline-expand" aria-label="Expand details">
-              <i class="fas fa-chevron-down"></i>
-            </button>
-          </div>
-          <p>System Programming Project (2024)</p>
-          <div class="timeline-details">
-            <h4>Project Scope</h4>
-            <ul class="achievements-list">
-              <li>Developed a custom Unix-like shell</li>
-              <li>Implemented core shell functionalities</li>
-              <li>Created custom command interpreters</li>
-            </ul>
-
-            <h4>Technical Challenges Solved</h4>
-            <ul class="achievements-list">
-              <li>Process management</li>
-              <li>Pipe implementation</li>
-              <li>Signal handling</li>
-              <li>Custom command parsing</li>
-            </ul>
-
-            <h4>Technologies and Skills</h4>
-            <ul class="modules-list">
-              <li>C Programming</li>
-              <li>System Calls</li>
-              <li>Linux Kernel Interactions</li>
-              <li>Process Management</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="timeline-item">
-          <div class="timeline-header">
-            <h3>FundX Project Lead</h3>
-            <button class="timeline-expand" aria-label="Expand details">
-              <i class="fas fa-chevron-down"></i>
-            </button>
-          </div>
-          <p>Web App Development (2024)</p>
-          <div class="timeline-details">
-            <h4>Project Responsibilities</h4>
-            <ul class="achievements-list">
-              <li>Led a team of 3 developers</li>
-              <li>Designed full-stack architecture</li>
-              <li>Implemented user authentication</li>
-              <li>Developed funding opportunity tracking system</li>
-            </ul>
-
-            <h4>Technical Achievements</h4>
-            <ul class="achievements-list">
-              <li>Reduced data retrieval time by 40%</li>
-              <li>Implemented secure REST APIs</li>
-              <li>Created responsive, mobile-friendly interface</li>
-            </ul>
-
-            <h4>Technologies Used</h4>
-            <ul class="modules-list">
-              <li>SQLite3</li>
-              <li>HTML</li>
-              <li>CSS</li>
-              <li>JavaScript</li>
-              <li>Node.js</li>
-              <li>JWT Authentication</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="timeline-item">
-          <div class="timeline-header">
-            <h3>Leap Science and Maths School</h3>
-            <button class="timeline-expand" aria-label="Expand details">
-              <i class="fas fa-chevron-down"></i>
-            </button>
-          </div>
-          <p>National Senior Certificate (2017 - 2021)</p>
-          <div class="timeline-details">
-            <h4>Key Subjects</h4>
-            <ul class="modules-list">
-              <li>IsiZulu Home Language</li>
-              <li>English First Additional Language</li>
-              <li>Mathematics</li>
-              <li>Accounting</li>
-              <li>Life Sciences</li>
-              <li>Physical Science</li>
-            </ul>
-
-            <h4>Academic Achievements</h4>
-            <ul class="achievements-list">
-              <li>Graduated with Distinction (89% Average)</li>
-              <li>Made it to the Leap Paper for being first person to achieve 7 distinctions</li>
-              <li>Achieved number one spot for Mathematics, Life Science and Physical Science 3 years in a row</li>
-            </ul>
-
-            <h4>Extracurricular Activities</h4>
-            <ul class="achievements-list">
-              <li>Netball</li>
-              <li>Cricket</li>
-              <li>Drama</li>
-              <li>Gumboots Dance</li>
-              <li>Term Volunteer at local daycares</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="projects" class="section">
-    <h2>Projects</h2>
-    <div class="projects-grid">
-      <div class="project-card">
-        <div class="project-card-inner">
-          <div class="project-card-front">
-            <h3>Kasi Kotas</h3>
-            <p>Help users discover best kota spots around Diepsloot, explore menus, and conveniently place orders for self-pickup.</p><br>
-            <div>
-              <p>Coming Soon:</p>
+        <header>
+            <h1><span> ATHINI MGAGULE</span></h1>
+            <div class="container">
+                <span id="static-text">I am </span>
+                <span id="dynamic-text"></span>
+                <span class="cursor"></span>
             </div>
-            <div class="tech-tags">
+            <nav>
+              <ul>
+                <li><a href="#about">About</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#timeline">Timeline</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#contact">Contact</a></li>
+              </ul>
+            </nav>
+        </header>
+
+        <div class="mission-statement">
+            <p>"Passionate about crafting elegant solutions to complex problems, I combine technical expertise with creative thinking to build innovative applications that make a difference. My goal is to contribute to projects that push the boundaries of what's possible in software development while maintaining a focus on user experience and code quality."</p>
+        </div>
+        
+        <div id="about" class="section">
+            <h2>About Me</h2>
+            <div class="about-content">
+                <div class="profile-image-container">
+                    <img src="assets/IMG-20241026-WA0029.jpg" alt="Athini Mgagule" class="profile-image">
+                </div>
+                <div class="about-text">
+                    <p>I am a passionate Computer Science graduate with a strong drive to create innovative technological solutions. My expertise lies in developing robust software applications, with a particular focus on system design and problem-solving.</p>
+                    <div class="about-highlights">
+                        <div class="highlight-item">
+                            <i class="fas fa-graduation-cap"></i>
+                            <h3>Education</h3>
+                            <p>BSc in Computer Science and Mathematics</p>
+                            <p>University of Witwatersrand</p>
+                        </div>
+                        
+                        <div class="highlight-item">
+                            <i class="fas fa-graduation-cap"></i>
+                            <h3>Education</h3>
+                            <p>National Senior Certificate</p>
+                            <p>Leap Science and Maths School</p>
+                        </div>
+                        
+                        <div class="highlight-item">
+                            <i class="fas fa-certificate"></i>
+                            <p>HP LIFE - Data Science and Analysis Certificate of Completion</p>
+                        </div>
+                    </div>
+                    <a href="assets/AM latest CV.pdf" class="btn download-resume">
+                        <i class="fas fa-download"></i>Download Resume
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <div class="section" id="projects">
+            <h2>Projects</h2>
+            <div class="project-slider">
+                <button class="slider-arrow prev-arrow" aria-label="Previous project">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="slider-arrow next-arrow" aria-label="Next project">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
               
-              <span class="tech-tag" style="color: purple;">User UI</span>
-              <span class="tech-tag" style="color: purple;">Admin UI</span>
+                <div class="projects-container">
+                    <div class="project-card active" data-index="0">
+                    <div class="project-card-inner">
+                        <div class="project-card-front">
+                        <img src="assets/warning--data-transfer-in-progress-507065943-59c6d2a70d327a001141794d-5bb792f246e0fb0051a88f9c.webp" alt="Kasi Kotas preview" class="project-thumbnail"/>
+                        <div class="project-content">
+                            <h3>Kasi Kotas</h3>
+                            <p>Help users discover best kota spots around Diepsloot, explore menus, and conveniently place orders for self-pickup.</p>
+                            <div class="tech-tags">
+                            <span class="tech-tag highlight">User UI</span>
+                            <span class="tech-tag highlight">Admin UI</span>
+                            </div>
+                        </div>
+                        </div>
+                        <div class="project-card-back">
+                        <div class="project-content">
+                            <h3>Kasi Kotas</h3>
+                            <div class="tech-stack">
+                            <span class="tech-tag">JavaScript</span>
+                            <span class="tech-tag">HTML</span>
+                            <span class="tech-tag">CSS</span>
+                            <span class="tech-tag">SQLite3</span>
+                            <span class="tech-tag">Node.js</span>
+                            </div>
+                            <div class="project-links">
+                            <a href="https://github.com/AthiniMgagule/KasiKotas" class="btn">
+                                <i class="fab fa-github"></i> View Code
+                            </a>
+                            <a href="https://kasikotas.netlify.app" class="btn">
+                                <i class="fas fa-external-link-alt"></i> Live Demo
+                            </a>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                    </div>
+
+                    <div class="project-card active" data-index="0">
+                        <div class="project-card-inner">
+                        <div class="project-card-front">
+                            <img src="assets/63c12849a1c7e9df64c819fc_programming-languages-shutterstock-1680857539-p-1080.webp" alt="Kasi Kotas preview" class="project-thumbnail"/>
+                            <div class="project-content">
+                            <h3>Secure Shellbox Chat</h3>
+                            <p>Real-time secure chat application with end-to-end encryption and intuitive interface.</p>
+                            <div class="tech-tags">
+                                <span class="tech-tag highlight">WebSockets</span>
+                                <span class="tech-tag highlight">Socket.IO</span>
+                            </div>
+                            </div>
+                        </div>
+                        <div class="project-card-back">
+                            <div class="project-content">
+                            <h3>Secure Shellbox Chat</h3>
+                            <div class="tech-stack">
+                                <span class="tech-tag">Java</span>
+                                <span class="tech-tag">Encryption</span>
+                            </div>
+                            <div class="project-links">
+                                <a href="https://github.com/AthiniMgagule/ShellboxChat" class="btn">
+                                    <i class="fab fa-github"></i> View Code
+                                </a>
+                                <a href="#" target="_blank" class="btn">
+                                    <i class="fas fa-external-link-alt"></i> Demo
+                                </a>
+                            </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+
+                    <div class="project-card active" data-index="0">
+                        <div class="project-card-inner">
+                        <div class="project-card-front">
+                            <img src="assets/computer.jpg" alt="Kasi Kotas preview" class="project-thumbnail"/>
+                            <div class="project-content">
+                                <h3>Novica</h3>
+                                <p>A secure platform for writers to craft, organize, and protect their work with cloud backup.</p>
+                            <div class="tech-tags">
+                                <span class="tech-tag highlight">AES-256 user authentication</span>
+                                <span class="tech-tag highlight">AWS S3</span>
+                                <span class="tech-tag highlight">PostgreSQL</span>
+                            </div>
+                            </div>
+                        </div>
+                        <div class="project-card-back">
+                            <div class="project-content">
+                            <h3>Novica</h3>
+                            <div class="tech-stack">
+                                <span class="tech-tag">JavaScript</span>
+                                <span class="tech-tag">HTML</span>
+                                <span class="tech-tag">CSS</span>
+                                <span class="tech-tag">SQLite3</span>
+                                <span class="tech-tag">Node.js</span>
+                            </div>
+                            <div class="project-links">
+                                <a href="https://github.com/AthiniMgagule/Novica" class="btn">
+                                <i class="fab fa-github"></i> View Code
+                                </a>
+                                <a href="https://nice-hill-0f4857b1e.5.azurestaticapps.net" class="btn">
+                                <i class="fas fa-external-link-alt"></i> Live Demo
+                                </a>
+                            </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+
+                    <div class="project-card active" data-index="0">
+                        <div class="project-card-inner">
+                        <div class="project-card-front">
+                            <img src="assets/linux-shell-expansion-commands1.png" alt="Kasi Kotas preview" class="project-thumbnail"/>
+                            <div class="project-content">
+                                <h3>Witsshell</h3>
+                                <p>Features like redirection, parallel command execution, and basic command handling.</p><br>
+                            </div>
+                        </div>
+                        <div class="project-card-back">
+                            <div class="project-content">
+                            <h3>Witsshell</h3>
+                            <div class="tech-stack">
+                                <span class="tech-tag">C</span>
+                            </div>
+                            <div class="project-links">
+                                <a href="https://github.com/AthiniMgagule/Witsshell" class="btn">
+                                <i class="fab fa-github"></i> View Code
+                                </a>
+                                <a href="#" target="_blank" class="btn">
+                                <i class="fas fa-external-link-alt"></i> Live Demo
+                                </a>
+                            </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+
+                    <div class="project-card active" data-index="0">
+                        <div class="project-card-inner">
+                        <div class="project-card-front">
+                            <img src="/api/placeholder/400/320" alt="Kasi Kotas preview" class="project-thumbnail"/>
+                            <div class="project-content">
+                                <h3>FundX</h3>
+                                <p>A web-based application optimizing the management of funding opportunities.</p><br>
+                            </div>
+                        </div>
+                        <div class="project-card-back">
+                            <div class="project-content">
+                            <h3>FundX</h3>
+                            <div class="tech-stack">
+                                <span class="tech-tag">JavaScript</span>
+                                <span class="tech-tag">HTML</span>
+                                <span class="tech-tag">CSS</span>
+                                <span class="tech-tag">SQLite3</span>
+                                <span class="tech-tag">Node.js</span>
+                            </div>
+                            <div class="project-links">
+                                <a href="https://github.com/Primeister/FundingRequest" class="btn">
+                                <i class="fab fa-github"></i> View Code
+                                </a>
+                                <a href="https://witty-wave-04f49ad0f.5.azurestaticapps.net/" class="btn">
+                                <i class="fas fa-external-link-alt"></i> Live Demo
+                                </a>
+                            </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+
+                    <div class="project-card active" data-index="0">
+                        <div class="project-card-inner">
+                        <div class="project-card-front">
+                            <img src="/api/placeholder/400/320" alt="Kasi Kotas preview" class="project-thumbnail"/>
+                            <div class="project-content">
+                            <h3>Kasi Kotas</h3>
+                            <p>Help users discover best kota spots around Diepsloot, explore menus, and conveniently place orders for self-pickup.</p>
+                            <div class="tech-tags">
+                                <span class="tech-tag highlight">User UI</span>
+                                <span class="tech-tag highlight">Admin UI</span>
+                            </div>
+                            </div>
+                        </div>
+                        <div class="project-card-back">
+                            <div class="project-content">
+                            <h3>Kasi Kotas</h3>
+                            <div class="tech-stack">
+                                <span class="tech-tag">JavaScript</span>
+                                <span class="tech-tag">HTML</span>
+                                <span class="tech-tag">CSS</span>
+                                <span class="tech-tag">SQLite3</span>
+                                <span class="tech-tag">Node.js</span>
+                            </div>
+                            <div class="project-links">
+                                <a href="https://github.com/AthiniMgagule/KasiKotas" class="btn">
+                                <i class="fab fa-github"></i> View Code
+                                </a>
+                                <a href="https://kasikotas.netlify.app" class="btn">
+                                <i class="fas fa-external-link-alt"></i> Live Demo
+                                </a>
+                            </div>
+                            </div>
+                        </div>
+                        </div>
+                    </div>
+                </div>
+          
+                <div class="slider-dots">
+                    <button class="dot active" data-index="0" aria-label="Go to project 1"></button>
+                    <button class="dot" data-index="1" aria-label="Go to project 2"></button>
+                    <button class="dot" data-index="2" aria-label="Go to project 3"></button>
+                    <button class="dot" data-index="3" aria-label="Go to project 4"></button>
+                    <button class="dot" data-index="4" aria-label="Go to project 5"></button>
+                </div>
             </div>
-          </div>
-          <div class="project-card-back">
-            <h3>Kasi Kotas</h3>
-            <div class="project-links">
-              <a href="https://github.com/AthiniMgagule/KasiKotas">
-                <i class="fab fa-github"></i> GitHub
-              </a>
-              <a href="https://kasikotas.netlify.app">
-                <i class="fas fa-external-link-alt"></i> Live Site
-              </a>
-            </div>
-            <div class="tech-tags">
-              <span class="tech-tag">JavaScript</span>
-              <span class="tech-tag">HTML</span>
-              <span class="tech-tag">CSS</span>
-              <span class="tech-tag">SQLite3</span>
-              <span class="tech-tag">Node.js</span>
-            </div>
-          </div>
         </div>
-      </div>
 
-      <div class="project-card">
-        <div class="project-card-inner">
-          <div class="project-card-front">
-            <h3>Secure Shellbox Chat</h3>
-            <p>Real-time secure chat application</p><br>
-            <div>
-              <p>Coming Soon:</p>
+        <div class="section" id="skills">
+            <h2>Skills</h2>
+            <div class="skills-container">
+                <div class="skills-column">
+                    <h3>Hard Skills</h3>
+                    <div class="skill-bar">
+                    <div class="skill-bar-fill" style="width: 90%; padding-left:20px;">Python</div>
+                    </div>
+                    <div class="skill-bar">
+                    <div class="skill-bar-fill" style="width: 70%; padding-left:20px;">Java</div>
+                    </div>
+                    <div class="skill-bar">
+                    <div class="skill-bar-fill" style="width: 60%; padding-left:20px;">Lua</div>
+                    </div>
+                    <div class="skill-bar">
+                    <div class="skill-bar-fill" style="width: 80%; padding-left:20px;">C++</div>
+                    </div>
+                    <div class="skill-bar">
+                    <div class="skill-bar-fill" style="width: 75%; padding-left:20px;">C</div>
+                    </div>
+                    <div class="skill-bar">
+                    <div class="skill-bar-fill" style="width: 80%; padding-left:20px;">JavaScript</div>
+                    </div>
+                    <div class="skill-bar">
+                    <div class="skill-bar-fill" style="width: 96%; padding-left:20px;">HTML</div>
+                    </div>
+                    <div class="skill-bar">
+                    <div class="skill-bar-fill" style="width: 100%; padding-left:20px;">CSS</div>
+                    </div>
+                    <div class="skill-bar">
+                    <div class="skill-bar-fill" style="width: 85%; padding-left:20px;">RESTAPIs</div>
+                    </div>
+                    <div class="skill-bar">
+                    <div class="skill-bar-fill" style="width: 90%; padding-left:20px;">MySQL</div>
+                    </div>
+                    <div class="skill-bar">
+                    <div class="skill-bar-fill" style="width: 100%; padding-left:20px;">SQLite3</div>
+                    </div>
+                    <div class="skill-bar">
+                    <div class="skill-bar-fill" style="width: 80%; padding-left:20px;">Node.js</div>
+                    </div>
+                </div>
+                <div class="skills-column">
+                    <h3>Soft Skills</h3>
+                    <div class="skill-bar">
+                    <div class="skill-bar-fill" style="width: 90%; padding-left:20px;">Creative Thinking</div>
+                    </div>
+                    <div class="skill-bar">
+                    <div class="skill-bar-fill" style="width: 95%; padding-left:20px;">Analytical Thinking</div>
+                    </div>
+                    <div class="skill-bar">
+                    <div class="skill-bar-fill" style="width: 85%; padding-left:20px;">Problem Solving</div>
+                    </div>
+                    <div class="skill-bar">
+                    <div class="skill-bar-fill" style="width: 80%; padding-left:20px;">Adaptability</div>
+                    </div>
+                    <div class="skill-bar">
+                    <div class="skill-bar-fill" style="width: 80%; padding-left:20px;">Detail Oriented</div>
+                    </div>
+                    <div class="skill-bar">
+                    <div class="skill-bar-fill" style="width: 70%; padding-left:20px;">Team Player</div>
+                    </div>
+                    <div class="skill-bar">
+                    <div class="skill-bar-fill" style="width: 100%; padding-left:20px;">Time Management</div>
+                    </div>
+                </div>
             </div>
-            <div class="tech-tags">
-              <span class="tech-tag" style="color: purple;">WebSockets</span>
-              <span class="tech-tag" style="color: purple;">Socket.IO</span>
-            </div>
-          </div>
-          <div class="project-card-back">
-            <h3>Secure Shellbox Chat</h3>
-            <div class="project-links">
-              <a href="https://github.com/AthiniMgagule/ShellboxChat">
-                <i class="fab fa-github"></i> GitHub
-              </a>
-              <a href="#" target="_blank">
-                <i class="fas fa-external-link-alt"></i> Demo
-              </a>
-            </div>
-            <div class="tech-tags">
-              <span class="tech-tag">Java</span>
-              <span class="tech-tag">Encryption</span>
-            </div>
-          </div>
         </div>
-      </div>
 
-      <div class="project-card">
-        <div class="project-card-inner">
-          <div class="project-card-front">
-            <h3>Novica</h3>
-            <p>Developing a secure platform for writers to craft, organize, and protect their work.</p><br>
-            <div>
-              <p>Coming Soon:</p>
-            </div>
-            <div class="tech-tags">
-              <span class="tech-tag" style="color: purple;">Uploading Data to AWS S3</span>
-              <span class="tech-tag" style="color: purple;">PostgreSQL Database</span>
-              <span class="tech-tag" style="color: purple;"></span>
-            </div>
-          </div>
-          <div class="project-card-back">
-            <h3>Novica</h3>
-            <div class="project-links">
-              <a href="https://github.com/AthiniMgagule/Novica">
-                <i class="fab fa-github"></i> GitHub
+        <div id="contact" class="section">
+            <h2>Contact Me</h2>
+            <div class="contact-icons">
+              <a href="mailto:athi200308@gmail.com" class="contact-icon">
+                <i class="fas fa-envelope"></i>
               </a>
-              <a href="#" target="_blank">
-                <i class="fas fa-external-link-alt"></i> Live Site
+              <a href="https://linkedin.com/in/athini-mgagule-8b8b362b2" class="contact-icon">
+                <i class="fab fa-linkedin"></i>
+              </a>
+              <a href="https://github.com/AthiniMgagule" class="contact-icon">
+                <i class="fab fa-github"></i>
               </a>
             </div>
-            <div class="tech-tags">
-              <span class="tech-tag">JavaScript</span>
-              <span class="tech-tag">HTML</span>
-              <span class="tech-tag">CSS</span>
-              <span class="tech-tag">SQLite3</span>
-              <span class="tech-tag">Node.js</span>
-            </div>
-          </div>
         </div>
-      </div>
 
-      <div class="project-card">
-        <div class="project-card-inner">
-          <div class="project-card-front">
-            <h3>Witsshell</h3>
-            <p>Features like redirection, parallel command execution, and basic command handling.</p><br>
-            <!-- <div>
-              <p>Coming Soon:</p>
-            </div>
-            <div class="tech-tags">
-              <span class="tech-tag" style="color: purple;">Uploading Data to AWS S3</span>
-              <span class="tech-tag" style="color: purple;">PostgreSQL Database</span>
-              <span class="tech-tag" style="color: purple;"></span>
-            </div> -->
-          </div>
-          <div class="project-card-back">
-            <h3>Witsshell</h3>
-            <div class="project-links">
-              <a href="https://github.com/AthiniMgagule/Witsshell">
-                <i class="fab fa-github"></i> GitHub
-              </a>
-              <a href="#" target="_blank">
-                <i class="fas fa-external-link-alt"></i> Demo
-              </a>
-            </div>
-            <div class="tech-tags">
-              <span class="tech-tag">C</span>
-            </div>
-          </div>
-        </div>
-      </div>
+        <script>
+            //script for the header
+            const titles = ["a Software Developer", "an aspiring Data Analyst", "an aspiring Cybersecurity Specialist"];
+            let titleIndex = 0;
+            let charIndex = 0;
+            let isDeleting = false;
+            const dynamicText = document.getElementById("dynamic-text");
 
-      <div class="project-card">
-        <div class="project-card-inner">
-          <div class="project-card-front">
-            <h3>FundX</h3>
-            <p>A web-based application optimizing the management of funding opportunities.</p><br>
-            <!-- <div>
-              <p>Coming Soon:</p>
-            </div> -->
-            <!-- <div class="tech-tags">
-              <span class="tech-tag" style="color: purple;">Uploading Data to AWS S3</span>
-              <span class="tech-tag" style="color: purple;">PostgreSQL Database</span>
-              <span class="tech-tag" style="color: purple;"></span>
-            </div> -->
-          </div>
-          <div class="project-card-back">
-            <h3>FundX</h3>
-            <div class="project-links">
-              <a href="#">
-                <i class="fab fa-github"></i> GitHub
-              </a>
-              <a href="https://witty-wave-04f49ad0f.5.azurestaticapps.net/">
-                <i class="fas fa-external-link-alt"></i> Live Site
-              </a>
-            </div>
-            <div class="tech-tags">
-              <span class="tech-tag">JavaScript</span>
-              <span class="tech-tag">HTML</span>
-              <span class="tech-tag">CSS</span>
-              <span class="tech-tag">SQLite3</span>
-              <span class="tech-tag">Node.js</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+        
+            function typeEffect() {
+                let currentTitle = titles[titleIndex];
+                if (isDeleting) {
+                    dynamicText.textContent = currentTitle.substring(0, charIndex--);
+                } else {
+                    dynamicText.textContent = currentTitle.substring(0, charIndex++);
+                }
 
-  <section id="contact" class="section">
-    <h2>Contact Me</h2>
-    <div class="contact-icons">
-      <a href="mailto:athi200308@gmail.com" class="contact-icon">
-        <i class="fas fa-envelope"></i>
-      </a>
-      <a href="https://linkedin.com/in/athini-mgagule-8b8b362b2" class="contact-icon">
-        <i class="fab fa-linkedin"></i>
-      </a>
-      <a href="https://github.com/AthiniMgagule" class="contact-icon">
-        <i class="fab fa-github"></i>
-      </a>
-    </div>
-  </section>
+                let speed = isDeleting ? 50 : 100;
 
-  <script>
-    document.querySelectorAll('.timeline-item').forEach((item, index) => {
-      item.style.setProperty('--delay', index);
-    });
-    
-    document.querySelectorAll('.timeline-item').forEach(item => {
-      const expandButton = item.querySelector('.timeline-expand');
-      expandButton.addEventListener('click', () => {
-        item.classList.toggle('active');
-        const icon = expandButton.querySelector('i');
-        icon.classList.toggle('fa-chevron-down');
-        icon.classList.toggle('fa-chevron-up');
-      });
-    });
+                if (!isDeleting && charIndex === currentTitle.length + 1) {
+                    speed = 2000;  // Pause before deleting
+                    isDeleting = true;
+                } else if (isDeleting && charIndex === 0) {
+                    isDeleting = false;
+                    titleIndex = (titleIndex + 1) % titles.length;
+                    speed = 500;  // Pause before typing next title
+                }
 
-    document.querySelectorAll('.module-header').forEach((header) => {
-    header.addEventListener('click', () => {
-      const details = header.nextElementSibling;
-      const isVisible = details.style.display === 'block';
-      details.style.display = isVisible ? 'none' : 'block';
-    });
-  });
-  </script>
-</body>
+                setTimeout(typeEffect, speed);
+            }
+
+            typeEffect();
+        </script>
+    </body>
 </html>
