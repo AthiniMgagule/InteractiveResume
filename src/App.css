@@ -1,0 +1,11 @@
+.carousel .control-arrow {
+    background-color: rgba(0, 0, 0, 0.5);  /* Arrow background color */
+    border-radius: 50%;  /* Make the arrows round */
+  }
+  .carousel .control-prev {
+    left: 10px;  /* Position the left arrow */
+  }
+  .carousel .control-next {
+    right: 10px;  /* Position the right arrow */
+  }
+  
