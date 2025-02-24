@@ -71,7 +71,7 @@ const About = () => {
             color="primary"
             startIcon={<DownloadIcon />}
             sx={{ mt: 3 }}
-            href="/assets/AM latest CV.pdf"
+            href="/AM latest CV.pdf"
             download
           >
             Download Resume
