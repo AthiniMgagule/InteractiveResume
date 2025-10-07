@@ -1,945 +1,709 @@
-import React, { useState, useEffect } from 'react';
-import { Mail, Phone, MapPin, Github, Linkedin, Globe, Award, Code, Database, Brain, ChevronRight, Download, Star } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Mail, Phone, MapPin, Github, Linkedin, Globe, Award, Code, Download, Lightbulb, Star, Target, Rocket, BookOpen } from 'lucide-react';
 
-const InteractiveResume = () => {
-  const [activeSection, setActiveSection] = useState('about');
-  const [isVisible, setIsVisible] = useState(false);
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+import EnhancedProjectCard from './EnhancedProjectCard';
+
+const StoryPortfolio = () => {
+  const [scrollY, setScrollY] = useState(0);
+  const [activeChapter, setActiveChapter] = useState(0);
+  const sectionsRef = useRef([]);
 
   useEffect(() => {
-    setIsVisible(true);
-    const handleMouseMove = (e) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+      
+      const scrollPosition = window.scrollY + window.innerHeight / 3;
+      sectionsRef.current.forEach((section, index) => {
+        if (section && section.offsetTop <= scrollPosition) {
+          setActiveChapter(index);
+        }
+      });
     };
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
+    
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  const sections = [
-    { id: 'about', label: 'About', icon: Star },
-    { id: 'experience', label: 'Experience', icon: Code },
-    { id: 'projects', label: 'Projects', icon: Database },
-    { id: 'education', label: 'Education', icon: Award },
-    { id: 'skills', label: 'Skills', icon: Brain },
-    {id: 'certifications', label: 'Certifications', icon: Brain}
-  ];
-
-  const skills = {
-    programming: ['Java', 'Python', 'JavaScript', 'Node.js', 'React'],
-    data: ['MySQL', 'PostgreSQL', 'SQLite', 'Data Analytics', 'Azure Cloud'],
-    frameworks: ['React', 'Spring boot'],
-    soft: ['Agile/Scrum', 'Team Leadership', 'Problem Solving', 'Project Management']
-  };
 
   const handleDownloadCV = () => {
     const urlDrive = 'https://drive.google.com/file/d/1PAGZxXQBVNgMZz64oh61jquIhKlBroXN/view?usp=drive_link';
     const link = document.createElement('a');
     link.href = urlDrive;
-    link.download = 'Athini_Mgagule_CV.pdf';
     link.target = '_blank';
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
   };
 
-  const glassStyle = {
-    background: 'rgba(255, 255, 255, 0.1)',
-    backdropFilter: 'blur(10px)',
-    border: '1px solid rgba(34, 211, 238, 0.2)',
-    borderRadius: '16px'
-  };
+  const chapters = [
+    { id: 'intro', label: 'The Beginning', icon: Lightbulb },
+    { id: 'journey', label: 'The Journey', icon: Star },
+    { id: 'proof', label: 'The Work', icon: Code },
+    { id: 'future', label: 'Next Chapter', icon: Rocket }
+  ];
 
-  const buttonStyle = {
-    background: 'linear-gradient(135deg, #06b6d4, #3b82f6)',
-    border: 'none',
-    borderRadius: '16px',
-    color: 'white',
-    cursor: 'pointer',
-    transition: 'all 0.3s ease',
-    fontWeight: '600'
+  const scrollToSection = (index) => {
+    if (sectionsRef.current[index]) {
+      sectionsRef.current[index].scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   };
 
   return (
     <div style={{
       minHeight: '100vh',
-      background: 'linear-gradient(135deg, #1e293b, #1e3a8a, #0e7490)',
-      position: 'relative',
-      overflow: 'hidden',
-      fontFamily: 'system-ui, -apple-system, sans-serif'
+      background: 'linear-gradient(180deg, #0a0e27 0%, #1a1142 50%, #0a0e27 100%)',
+      color: '#e2e8f0',
+      fontFamily: 'system-ui, -apple-system, sans-serif',
+      position: 'relative'
     }}>
-      {/* Animated background particles */}
-      <div style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}>
-        {[...Array(50)].map((_, i) => (
+      {/* Navigation dots */}
+      <div style={{
+        position: 'fixed',
+        right: '2rem',
+        top: '50%',
+        transform: 'translateY(-50%)',
+        zIndex: 1000,
+        display: window.innerWidth > 768 ? 'flex' : 'none',
+        flexDirection: 'column',
+        gap: '1rem'
+      }}>
+        {chapters.map((chapter, index) => (
           <div
-            key={i}
+            key={chapter.id}
+            onClick={() => scrollToSection(index)}
             style={{
-              position: 'absolute',
-              width: '4px',
-              height: '4px',
-              background: '#22d3ee',
-              borderRadius: '50%',
-              opacity: '0.3',
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animation: `pulse ${2 + Math.random() * 3}s infinite ${Math.random() * 3}s`
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.75rem',
+              transition: 'all 0.3s ease'
             }}
-          />
+          >
+            <span style={{
+              fontSize: '0.75rem',
+              color: activeChapter === index ? '#a78bfa' : '#64748b',
+              opacity: activeChapter === index ? 1 : 0,
+              transform: activeChapter === index ? 'translateX(0)' : 'translateX(10px)',
+              transition: 'all 0.3s ease',
+              whiteSpace: 'nowrap'
+            }}>
+              {chapter.label}
+            </span>
+            <div style={{
+              width: activeChapter === index ? '12px' : '8px',
+              height: activeChapter === index ? '12px' : '8px',
+              borderRadius: '50%',
+              background: activeChapter === index ? '#a78bfa' : '#334155',
+              border: `2px solid ${activeChapter === index ? '#c4b5fd' : '#475569'}`,
+              transition: 'all 0.3s ease',
+              boxShadow: activeChapter === index ? '0 0 20px rgba(167, 139, 250, 0.5)' : 'none'
+            }} />
+          </div>
         ))}
       </div>
 
-      {/* Mouse follower */}
-      <div
-        style={{
-          position: 'fixed',
-          width: '16px',
-          height: '16px',
-          background: '#22d3ee',
-          borderRadius: '50%',
-          opacity: '0.4',
-          pointerEvents: 'none',
-          zIndex: 50,
-          left: mousePosition.x - 8,
-          top: mousePosition.y - 8,
-          transition: 'all 0.1s ease-out',
-          transform: 'scale(1.5)'
-        }}
-      />
-
-      <div style={{ position: 'relative', zIndex: 10, width: '100%', margin: '0 auto', padding: '2rem' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: window.innerWidth > 1024 ? '1fr 2fr' : '1fr', gap: '2rem' }}>
-          
-          {/* Sidebar */}
-          <div style={{
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '1rem',
-            height: 'fit-content',
-            maxHeight: '100%',
-            overflowY: 'auto',
-            transform: isVisible ? 'translateX(0) scale(1)' : 'translateX(-100px) scale(0.95)',
-            opacity: isVisible ? 1 : 0,
-            transition: 'all 1s ease-out'
-          }}>
-            
-            {/* Profile Card */}
-            <div style={{
-              ...glassStyle,
-              padding: '1.25rem',
-              textAlign: 'center',
-              transition: 'transform 0.3s ease, border-color 0.3s ease'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'scale(1.05)';
-              e.currentTarget.style.borderColor = 'rgba(34, 211, 238, 0.4)';
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'scale(1)';
-              e.currentTarget.style.borderColor = 'rgba(34, 211, 238, 0.2)';
-            }}>
-              
-              <div style={{
-                width: '100px',
-                height: '100px',
-                margin: '0 auto 1rem',
-                background: 'linear-gradient(135deg, #22d3ee, #3b82f6)',
-                borderRadius: '50%',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontSize: '1.75rem',
-                fontWeight: 'bold',
-                color: 'white',
-                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
-              }}>
-                AM
-              </div>
-              
-              <h1 style={{ fontSize: '1.375rem', fontWeight: 'bold', color: 'white', margin: '0 0 0.5rem' }}>
-                Athini Mgagule
-              </h1>
-              <p style={{ color: '#67e8f9', fontWeight: '500', margin: '0 0 1rem', fontSize: '0.9rem' }}>
-                Java Developer | AI & Data Analyst
-              </p>
-              
-              {/* Contact Info */}
-              <div style={{ borderTop: '1px solid rgba(34, 211, 238, 0.2)', paddingTop: '1rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: '#d1d5db', marginBottom: '0.75rem', transition: 'color 0.3s ease' }}
-                     onMouseEnter={(e) => e.currentTarget.style.color = '#22d3ee'}
-                     onMouseLeave={(e) => e.currentTarget.style.color = '#d1d5db'}>
-                  <Phone size={16} />
-                  <span style={{ fontSize: '0.875rem' }}>+27671891052</span>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: '#d1d5db', marginBottom: '0.75rem', transition: 'color 0.3s ease' }}
-                     onMouseEnter={(e) => e.currentTarget.style.color = '#22d3ee'}
-                     onMouseLeave={(e) => e.currentTarget.style.color = '#d1d5db'}>
-                  <Mail size={16} />
-                  <span style={{ fontSize: '0.875rem' }}>athi200308@gmail.com</span>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', color: '#d1d5db', marginBottom: '1rem', transition: 'color 0.3s ease' }}
-                     onMouseEnter={(e) => e.currentTarget.style.color = '#22d3ee'}
-                     onMouseLeave={(e) => e.currentTarget.style.color = '#d1d5db'}>
-                  <MapPin size={16} />
-                  <span style={{ fontSize: '0.875rem' }}>Randburg, Johannesburg</span>
-                </div>
-              </div>
-
-              {/* Social Links */}
-              <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem' }}>
-                <a 
-                  href="https://linkedin.com/in/athini-mgagule-8b8b362b2" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  style={{
-                    width: '40px',
-                    height: '40px',
-                    background: '#2563eb',
-                    borderRadius: '50%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    transition: 'all 0.3s ease',
-                    textDecoration: 'none'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = '#3b82f6';
-                    e.currentTarget.style.transform = 'scale(1.1)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = '#2563eb';
-                    e.currentTarget.style.transform = 'scale(1)';
-                  }}
-                >
-                  <Linkedin size={18} color="white" />
-                </a>
-                <a 
-                  href="https://github.com/AthiniMgagule" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  style={{
-                    width: '40px',
-                    height: '40px',
-                    background: '#374151',
-                    borderRadius: '50%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    transition: 'all 0.3s ease',
-                    textDecoration: 'none'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = '#4b5563';
-                    e.currentTarget.style.transform = 'scale(1.1)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = '#374151';
-                    e.currentTarget.style.transform = 'scale(1)';
-                  }}
-                >
-                  <Github size={18} color="white" />
-                </a>
-                <a 
-                  href="https://athinimgagule.netlify.app" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  style={{
-                    width: '40px',
-                    height: '40px',
-                    background: '#0891b2',
-                    borderRadius: '50%',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    transition: 'all 0.3s ease',
-                    textDecoration: 'none'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.background = '#06b6d4';
-                    e.currentTarget.style.transform = 'scale(1.1)';
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.background = '#0891b2';
-                    e.currentTarget.style.transform = 'scale(1)';
-                  }}
-                >
-                  <Globe size={18} color="white" />
-                </a>
-              </div>
-            </div>
-
-            {/* Navigation */}
-            <div style={{ ...glassStyle, padding: '0.75rem' }}>
-              <nav style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem' }}>
-                {sections.map((section) => {
-                  const IconComponent = section.icon;
-                  const isActive = activeSection === section.id;
-                  return (
-                    <button
-                      key={section.id}
-                      onClick={() => setActiveSection(section.id)}
-                      style={{
-                        width: '100%',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.75rem',
-                        padding: '0.625rem 1rem',
-                        borderRadius: '12px',
-                        border: 'none',
-                        background: isActive ? '#06b6d4' : 'transparent',
-                        color: isActive ? 'white' : '#d1d5db',
-                        cursor: 'pointer',
-                        transition: 'all 0.3s ease',
-                        fontSize: '0.875rem',
-                        fontWeight: '500'
-                      }}
-                      onMouseEnter={(e) => {
-                        if (!isActive) {
-                          e.currentTarget.style.background = 'rgba(255, 255, 255, 0.1)';
-                          e.currentTarget.style.color = '#22d3ee';
-                        }
-                      }}
-                      onMouseLeave={(e) => {
-                        if (!isActive) {
-                          e.currentTarget.style.background = 'transparent';
-                          e.currentTarget.style.color = '#d1d5db';
-                        }
-                      }}
-                    >
-                      <IconComponent size={18} />
-                      <span>{section.label}</span>
-                      <ChevronRight 
-                        size={16} 
-                        style={{ 
-                          marginLeft: 'auto',
-                          transform: isActive ? 'rotate(90deg)' : 'rotate(0deg)',
-                          transition: 'transform 0.3s ease'
-                        }} 
-                      />
-                    </button>
-                  );
-                })}
-              </nav>
-            </div>
-
-            {/* Download CV */}
-            <button 
-              onClick={handleDownloadCV}
-              style={{
-                ...buttonStyle,
-                width: '100%',
-                padding: '0.625rem 1.25rem',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '0.5rem',
-                boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)'
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.background = 'linear-gradient(135deg, #0891b2, #2563eb)';
-                e.currentTarget.style.transform = 'scale(1.05)';
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.background = 'linear-gradient(135deg, #06b6d4, #3b82f6)';
-                e.currentTarget.style.transform = 'scale(1)';
-              }}
-            >
-              <Download size={18} />
-              <span>Download CV</span>
-            </button>
+      {/* Fixed header */}
+      <div style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        background: `rgba(10, 14, 39, ${Math.min(scrollY / 200, 0.95)})`,
+        backdropFilter: 'blur(10px)',
+        borderBottom: '1px solid rgba(139, 92, 246, 0.2)',
+        padding: '1rem 2rem',
+        zIndex: 999,
+        transition: 'all 0.3s ease'
+      }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
+          <div>
+            <h1 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 'bold', background: 'linear-gradient(135deg, #a78bfa, #60a5fa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+              Athini Mgagule
+            </h1>
+            <p style={{ margin: 0, fontSize: '0.875rem', color: '#94a3b8' }}>Software Developer</p>
           </div>
-
-          {/* Main Content */}
-          <div style={{
-            height: '100%',
-            transform: isVisible ? 'translateX(0) scale(1)' : 'translateX(100px) scale(0.95)',
-            opacity: isVisible ? 1 : 0,
-            transition: 'all 1s ease-out 0.3s'
-          }}>
-            <div style={{
-              ...glassStyle,
-              height: '100%',
-              padding: '2rem',
-              overflowY: 'auto'
-            }}>
-              
-              {/* About Section */}
-              {activeSection === 'about' && (
-                <div >
-                  <h2 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: 'white', marginBottom: '1.5rem' }}>
-                    About Me
-                  </h2>
-                  <p style={{ color: '#d1d5db', fontSize: '1.125rem', lineHeight: '1.75', marginBottom: '2rem' }}>
-                    I am a highly motivated Computer Science graduate with a passion for creating impactful solutions that solve real-world problems. I thrive on transforming complex technical challenges into user-friendly applications, having successfully led development teams and delivered projects that improved operational efficiency.
-                  </p>
-                  
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem' }}>
-                    {[
-                      { icon: Code, title: 'Java Developer', desc: 'Full-stack development with modern frameworks like Spring boot' },
-                      { icon: Code, title: 'Web Developer', desc: 'Web development with Core HTML/CSS/JS and with modern frameworks like react'},
-                      { icon: Brain, title: 'AI Enthusiast', desc: 'Machine learning and data analysis' },
-                      { icon: Database, title: 'Data Analyst', desc: 'Database optimization and insights' }
-                    ].map((item, i) => (
-                      <div
-                        key={i}
-                        style={{
-                          background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(34, 211, 238, 0.2))',
-                          padding: '1rem',
-                          borderRadius: '12px',
-                          border: '1px solid rgba(34, 211, 238, 0.2)',
-                          transition: 'transform 0.3s ease'
-                        }}
-                        onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-                        onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-                      >
-                        <item.icon size={24} color="#22d3ee" style={{ marginBottom: '0.5rem' }} />
-                        <h3 style={{ color: 'white', fontWeight: 'bold', margin: '0 0 0.25rem' }}>{item.title}</h3>
-                        <p style={{ color: '#d1d5db', fontSize: '0.875rem', margin: 0 }}>{item.desc}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {/* Experience Section */}
-              {activeSection === 'experience' && (
-                <div>
-                  <h2 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: 'white', marginBottom: '1.5rem' }}>
-                    Experience
-                  </h2>
-
-                  {/* Example Experience Card */}
-                  <div
-                    style={{
-                      background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(34, 211, 238, 0.1))',
-                      padding: '1.5rem',
-                      borderRadius: '12px',
-                      border: '1px solid rgba(34, 211, 238, 0.2)',
-                      transition: 'all 0.3s ease',
-                      width: '100%',
-                      marginBottom: '1.5rem'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'scale(1.02)';
-                      e.currentTarget.style.borderColor = 'rgba(34, 211, 238, 0.4)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'scale(1)';
-                      e.currentTarget.style.borderColor = 'rgba(34, 211, 238, 0.2)';
-                    }}
-                  >
-                    {/* Header */}
-                    <div style={{ display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.75rem' }}>
-                      <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: 'white', margin: 0 }}>
-                        Exam Invigilator
-                      </h3>
-                      <span style={{ color: '#22d3ee', fontSize: '0.875rem' }}>02/2024 - 11/2024</span>
-                    </div>
-                    <p style={{ color: '#67e8f9', marginBottom: '0.75rem' }}>University of Witwatersrand</p>
-
-                    {/* Bullet points */}
-                    <ul style={{ listStyle: 'none', paddingLeft: 0, margin: 0, color: '#d1d5db' }}>
-                      <li style={{ marginBottom: '0.5rem', display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
-                        <span style={{ color: '#22d3ee' }}>✔</span>
-                        Monitored exam environments, ensuring 100% adherence to academic integrity policies
-                      </li>
-                      <li style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
-                        <span style={{ color: '#22d3ee' }}>✔</span>
-                        Ensured compliance with university regulations and addressed student concerns
-                      </li>
-                    </ul>
-                  </div>
-                </div>
-              )}
-
-              {/* Projects Section */}
-              {activeSection === 'projects' && (
-                <div>
-                  <h2 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: 'white', marginBottom: '1.5rem' }}>
-                    Projects
-                  </h2>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-
-                    {/* URL Shortener */}
-                    <div style={{
-                      background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(34, 211, 238, 0.1))',
-                      padding: '1.5rem',
-                      borderRadius: '12px',
-                      border: '1px solid rgba(34, 211, 238, 0.2)',
-                      transition: 'all 0.3s ease'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'scale(1.02)';
-                      e.currentTarget.style.borderColor = 'rgba(34, 211, 238, 0.4)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'scale(1)';
-                      e.currentTarget.style.borderColor = 'rgba(34, 211, 238, 0.2)';
-                    }}
-                    >
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem', flexWrap: 'wrap', gap: '0.5rem' }}>
-                        <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: 'white', margin: 0 }}>
-                          URL Shortener
-                        </h3>
-                        <span style={{ color: '#22d3ee', fontSize: '0.875rem' }}>08/2025</span>
-                      </div>
-                      <p style={{ color: '#67e8f9', marginBottom: '0.75rem' }}>
-                        A tool that shortens long URLs into shareable links with efficient redirection.
-                      </p>
-                      <p style={{ color: '#d1d5db', marginBottom: '0.5rem' }}>
-                        Simplifies sharing of lengthy URLs and integrates with web apps.
-                      </p>
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-                        {['React', 'JavaScript', 'Spring Boot', 'MySQL'].map((tech, i) => (
-                          <span key={i} style={{
-                            background: 'rgba(59, 130, 246, 0.2)',
-                            color: '#93c5fd',
-                            padding: '0.25rem 0.75rem',
-                            borderRadius: '20px',
-                            fontSize: '0.875rem',
-                            border: '1px solid rgba(59, 130, 246, 0.3)'
-                          }}>
-                            {tech}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                    
-                    {/* MovieDatabase */}
-                    <div style={{
-                      background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(34, 211, 238, 0.1))',
-                      padding: '1.5rem',
-                      borderRadius: '12px',
-                      border: '1px solid rgba(34, 211, 238, 0.2)',
-                      transition: 'all 0.3s ease'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'scale(1.02)';
-                      e.currentTarget.style.borderColor = 'rgba(34, 211, 238, 0.4)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'scale(1)';
-                      e.currentTarget.style.borderColor = 'rgba(34, 211, 238, 0.2)';
-                    }}
-                    >
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem', flexWrap: 'wrap', gap: '0.5rem' }}>
-                        <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: 'white', margin: 0 }}>
-                          MovieDatabase
-                        </h3>
-                        <span style={{ color: '#22d3ee', fontSize: '0.875rem' }}>08/2025 – Present</span>
-                      </div>
-                      <p style={{ color: '#67e8f9', marginBottom: '0.75rem' }}>
-                        A platform where users can explore movies and TV shows, create personal watchlists, and interact with other users.
-                      </p>
-                      <p style={{ color: '#d1d5db', marginBottom: '0.5rem' }}>
-                        Designed to make movie discovery and social interaction around media seamless.
-                      </p>
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-                        {['React', 'JavaScript'].map((tech, i) => (
-                          <span key={i} style={{
-                            background: 'rgba(59, 130, 246, 0.2)',
-                            color: '#93c5fd',
-                            padding: '0.25rem 0.75rem',
-                            borderRadius: '20px',
-                            fontSize: '0.875rem',
-                            border: '1px solid rgba(59, 130, 246, 0.3)'
-                          }}>
-                            {tech}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                    
-                    {/* WriteWisp */}
-                    <div style={{
-                      background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(34, 211, 238, 0.1))',
-                      padding: '1.5rem',
-                      borderRadius: '12px',
-                      border: '1px solid rgba(34, 211, 238, 0.2)',
-                      transition: 'all 0.3s ease'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'scale(1.02)';
-                      e.currentTarget.style.borderColor = 'rgba(34, 211, 238, 0.4)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'scale(1)';
-                      e.currentTarget.style.borderColor = 'rgba(34, 211, 238, 0.2)';
-                    }}
-                    >
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem', flexWrap: 'wrap', gap: '0.5rem' }}>
-                        <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: 'white', margin: 0 }}>
-                          WriteWisp
-                        </h3>
-                        <span style={{ color: '#22d3ee', fontSize: '0.875rem' }}>03/2024 – Present</span>
-                      </div>
-                      <p style={{ color: '#67e8f9', marginBottom: '0.75rem' }}>
-                        A free platform for writers to draft and publish novels. It also offers prompts to spark inspiration.
-                      </p>
-                      <p style={{ color: '#d1d5db', marginBottom: '0.5rem' }}>
-                        Helps aspiring authors overcome writer’s block and share stories with ease.
-                      </p>
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-                        {['React', 'JavaScript', 'Node.js', 'SQLite'].map((tech, i) => (
-                          <span key={i} style={{
-                            background: 'rgba(59, 130, 246, 0.2)',
-                            color: '#93c5fd',
-                            padding: '0.25rem 0.75rem',
-                            borderRadius: '20px',
-                            fontSize: '0.875rem',
-                            border: '1px solid rgba(59, 130, 246, 0.3)'
-                          }}>
-                            {tech}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-
-                    
-
-                  </div>
-                </div>
-              )}
-
-
-              {/* Education Section */}
-              {activeSection === 'education' && (
-                <div>
-                  <h2 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: 'white', marginBottom: '1.5rem' }}>
-                    Education
-                  </h2>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-
-                    {/* Faith Mangope Technology and Leadership Institute */}
-                    <div style={{
-                      background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(34, 211, 238, 0.1))',
-                      padding: '1.5rem',
-                      borderRadius: '12px',
-                      border: '1px solid rgba(34, 211, 238, 0.2)',
-                      transition: 'all 0.3s ease'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'scale(1.02)';
-                      e.currentTarget.style.borderColor = 'rgba(34, 211, 238, 0.4)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'scale(1)';
-                      e.currentTarget.style.borderColor = 'rgba(34, 211, 238, 0.2)';
-                    }}
-                    >
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem', flexWrap: 'wrap', gap: '0.5rem' }}>
-                        <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: 'white', margin: 0 }}>
-                          Software Development & Data Analytics
-                        </h3>
-                        <span style={{ color: '#22d3ee', fontSize: '0.875rem' }}>03/2025 - Present</span>
-                      </div>
-                      <p style={{ color: '#67e8f9', marginBottom: '0.75rem' }}>Faith Mangope Technology and Leadership Institute</p>
-                      <p style={{ color: '#d1d5db', margin: 0 }}>Azure Cloud Computing, Java OCA, Microsoft Power BI, Microsoft AI</p>
-                    </div>
-
-                    {/* University of Witwatersrand */}
-                    <div style={{
-                      background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(34, 211, 238, 0.1))',
-                      padding: '1.5rem',
-                      borderRadius: '12px',
-                      border: '1px solid rgba(34, 211, 238, 0.2)',
-                      transition: 'all 0.3s ease'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'scale(1.02)';
-                      e.currentTarget.style.borderColor = 'rgba(34, 211, 238, 0.4)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'scale(1)';
-                      e.currentTarget.style.borderColor = 'rgba(34, 211, 238, 0.2)';
-                    }}
-                    >
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem', flexWrap: 'wrap', gap: '0.5rem' }}>
-                        <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: 'white', margin: 0 }}>
-                          BSc Computer Science and Mathematics
-                        </h3>
-                        <span style={{ color: '#22d3ee', fontSize: '0.875rem' }}>02/2022 - 11/2024</span>
-                      </div>
-                      <p style={{ color: '#67e8f9', marginBottom: '0.75rem' }}>University of Witwatersrand</p>
-                      <p style={{ color: '#d1d5db', marginBottom: '0.5rem' }}>
-                        Operating Systems, Cryptography, Software Design, Mobile Computing, Computer Networks, Database Fundamentals, Analysis of Algorithms, Information Systems
-                      </p>
-                      <div style={{
-                        background: 'rgba(234, 179, 8, 0.2)',
-                        color: '#fde047',
-                        padding: '0.25rem 0.75rem',
-                        borderRadius: '20px',
-                        fontSize: '0.875rem',
-                        border: '1px solid rgba(234, 179, 8, 0.3)',
-                        display: 'inline-block'
-                      }}>
-                        Certificate of Merit: Positive Linear Systems III
-                      </div>
-                    </div>
-
-                    {/* Leap Science and Maths School */}
-                    <div style={{
-                      background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(34, 211, 238, 0.1))',
-                      padding: '1.5rem',
-                      borderRadius: '12px',
-                      border: '1px solid rgba(34, 211, 238, 0.2)',
-                      transition: 'all 0.3s ease'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'scale(1.02)';
-                      e.currentTarget.style.borderColor = 'rgba(34, 211, 238, 0.4)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'scale(1)';
-                      e.currentTarget.style.borderColor = 'rgba(34, 211, 238, 0.2)';
-                    }}
-                    >
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem', flexWrap: 'wrap', gap: '0.5rem' }}>
-                        <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: 'white', margin: 0 }}>
-                          National Senior Certificate
-                        </h3>
-                        <span style={{ color: '#22d3ee', fontSize: '0.875rem' }}>01/2017 - 12/2021</span>
-                      </div>
-                      <p style={{ color: '#67e8f9', marginBottom: '0.75rem' }}>Leap Science and Maths School</p>
-                      <p style={{ color: '#d1d5db', margin: 0 }}>
-                        Mathematics, Accounting, Physical Science, Life Science
-                      </p>
-                    </div>
-
-                  </div>
-                </div>
-              )}
-
-              {/* Skills Section */}
-              {activeSection === 'skills' && (
-                <div>
-                  <h2 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: 'white', marginBottom: '1.5rem' }}>
-                    Skills
-                  </h2>
-
-                  {/* Category Cards */}
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1.5rem' }}>
-                    {Object.entries(skills).map(([category, skillList], index) => (
-                      <div
-                        key={category}
-                        style={{
-                          background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(34, 211, 238, 0.1))',
-                          padding: '1.5rem',
-                          borderRadius: '12px',
-                          border: '1px solid rgba(34, 211, 238, 0.2)',
-                          transition: 'all 0.3s ease'
-                        }}
-                        onMouseEnter={(e) => {
-                          e.currentTarget.style.transform = 'scale(1.02)';
-                          e.currentTarget.style.borderColor = 'rgba(34, 211, 238, 0.4)';
-                        }}
-                        onMouseLeave={(e) => {
-                          e.currentTarget.style.transform = 'scale(1)';
-                          e.currentTarget.style.borderColor = 'rgba(34, 211, 238, 0.2)';
-                        }}
-                      >
-                        <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: 'white', marginBottom: '1rem' }}>
-                          {category.charAt(0).toUpperCase() + category.slice(1)}
-                        </h3>
-                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                          {skillList.map((skill, i) => (
-                            <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                              <span style={{ color: '#d1d5db', fontSize: '0.875rem' }}>{skill}</span>
-                              <span style={{ color: '#22d3ee', fontSize: '0.75rem' }}>⭐⭐⭐</span> {/* Level badges */}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Skill Tags Wall */}
-                  <div style={{
-                    marginTop: '2rem',
-                    padding: '1.5rem',
-                    background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(59, 130, 246, 0.1))',
-                    borderRadius: '12px',
-                    border: '1px solid rgba(34, 211, 238, 0.2)'
-                  }}>
-                    <h3 style={{ fontSize: '1.125rem', fontWeight: 'bold', color: '#22d3ee', marginBottom: '1rem' }}>Highlights</h3>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-                      {['Java SE 8', 'Python', 'React', 'Azure Cloud', 'Data Analytics', 'Agile Methodology', 'Problem Solving'].map((tag, i) => (
-                        <span
-                          key={i}
-                          style={{
-                            padding: '0.375rem 1rem',
-                            background: 'rgba(6, 182, 212, 0.2)',
-                            color: '#67e8f9',
-                            borderRadius: '20px',
-                            fontSize: '0.875rem',
-                            border: '1px solid rgba(34, 211, 238, 0.3)'
-                          }}
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              )}
-
-              {/* Certifications Section */}
-              {activeSection === 'certifications' && (
-                <div>
-                  <h2 style={{ fontSize: '1.875rem', fontWeight: 'bold', color: 'white', marginBottom: '1.5rem' }}>
-                    Certifications
-                  </h2>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-                    
-                    <div style={{
-                      background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(34, 211, 238, 0.1))',
-                      padding: '1.5rem',
-                      borderRadius: '12px',
-                      border: '1px solid rgba(34, 211, 238, 0.2)',
-                      transition: 'all 0.3s ease'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'scale(1.02)';
-                      e.currentTarget.style.borderColor = 'rgba(34, 211, 238, 0.4)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'scale(1)';
-                      e.currentTarget.style.borderColor = 'rgba(34, 211, 238, 0.2)';
-                    }}
-                    >
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem', flexWrap: 'wrap', gap: '0.5rem' }}>
-                        <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: 'white', margin: 0 }}>Oracle Certified Associate, Java SE 8 Programmer I</h3>
-                        <span style={{ color: '#22d3ee', fontSize: '0.875rem' }}>09/2025</span>
-                      </div>
-                      <p style={{ color: '#67e8f9', marginBottom: '0.75rem', margin: '0 0 0.75rem' }}>Oracle</p>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
-                        <span style={{ color: '#d1d5db', fontSize: '0.875rem' }}>Credential ID:</span>
-                        <span style={{ color: '#22d3ee', fontSize: '0.875rem', fontFamily: 'monospace' }}>322052550OCAJSE8</span>
-                      </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-                        <div style={{
-                          background: 'rgba(59, 130, 246, 0.2)',
-                          color: '#93c5fd',
-                          padding: '0.25rem 0.75rem',
-                          borderRadius: '20px',
-                          fontSize: '0.875rem',
-                          border: '1px solid rgba(59, 130, 246, 0.3)',
-                          display: 'inline-block'
-                        }}>
-                          Java Programming Certification
-                        </div>
-                        <a 
-                          href="https://catalog-education.oracle.com/ords/certview/sharebadge?id=8E6A46D55B62EE21AA9563A9B75C5EC6FA9EFB7BB67BD9C3DFE7C877697009C4"
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          style={{
-                            color: '#22d3ee',
-                            textDecoration: 'none',
-                            fontSize: '0.875rem',
-                            fontWeight: '500',
-                            transition: 'color 0.3s ease'
-                          }}
-                          onMouseEnter={(e) => e.currentTarget.style.color = '#67e8f9'}
-                          onMouseLeave={(e) => e.currentTarget.style.color = '#22d3ee'}
-                        >
-                          See Credentials →
-                        </a>
-                      </div>
-                    </div>
-
-                    <div style={{
-                      background: 'linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(34, 211, 238, 0.1))',
-                      padding: '1.5rem',
-                      borderRadius: '12px',
-                      border: '1px solid rgba(34, 211, 238, 0.2)',
-                      transition: 'all 0.3s ease'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'scale(1.02)';
-                      e.currentTarget.style.borderColor = 'rgba(34, 211, 238, 0.4)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'scale(1)';
-                      e.currentTarget.style.borderColor = 'rgba(34, 211, 238, 0.2)';
-                    }}
-                    >
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '0.75rem', flexWrap: 'wrap', gap: '0.5rem' }}>
-                        <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', color: 'white', margin: 0 }}>Microsoft Certified: Azure Fundamentals</h3>
-                        <span style={{ color: '#22d3ee', fontSize: '0.875rem' }}>05/2025</span>
-                      </div>
-                      <p style={{ color: '#67e8f9', marginBottom: '0.75rem', margin: '0 0 0.75rem' }}>Microsoft</p>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
-                        <span style={{ color: '#d1d5db', fontSize: '0.875rem' }}>Credential ID:</span>
-                        <span style={{ color: '#22d3ee', fontSize: '0.875rem', fontFamily: 'monospace' }}>D17775F8F856A4D0</span>
-                      </div>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-                        <div style={{
-                          background: 'rgba(59, 130, 246, 0.2)',
-                          color: '#93c5fd',
-                          padding: '0.25rem 0.75rem',
-                          borderRadius: '20px',
-                          fontSize: '0.875rem',
-                          border: '1px solid rgba(59, 130, 246, 0.3)',
-                          display: 'inline-block'
-                        }}>
-                          Cloud Computing Fundamentals
-                        </div>
-                        <a 
-                          href="https://learn.microsoft.com/en-us/users/athinimgagule-9151/credentials/d17775f8f856a4d0"
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          style={{
-                            color: '#22d3ee',
-                            textDecoration: 'none',
-                            fontSize: '0.875rem',
-                            fontWeight: '500',
-                            transition: 'color 0.3s ease'
-                          }}
-                          onMouseEnter={(e) => e.currentTarget.style.color = '#67e8f9'}
-                          onMouseLeave={(e) => e.currentTarget.style.color = '#22d3ee'}
-                        >
-                          See Credentials →
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div style={{
-                    marginTop: '2rem',
-                    padding: '1.5rem',
-                    background: 'linear-gradient(135deg, rgba(6, 182, 212, 0.1), rgba(59, 130, 246, 0.1))',
-                    borderRadius: '12px',
-                    border: '1px solid rgba(34, 211, 238, 0.2)'
-                  }}>
-                    <h3 style={{ fontSize: '1.125rem', fontWeight: 'bold', color: '#22d3ee', marginBottom: '1rem' }}>Certification Skills</h3>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.5rem' }}>
-                      {['Java SE 8', 'Object-Oriented Programming', 'Azure Cloud Services', 'Cloud Computing', 'Microsoft Azure', 'Java Fundamentals'].map((skill, i) => (
-                        <span
-                          key={i}
-                          style={{
-                            padding: '0.375rem 1rem',
-                            background: 'rgba(6, 182, 212, 0.2)',
-                            color: '#67e8f9',
-                            borderRadius: '20px',
-                            fontSize: '0.875rem',
-                            border: '1px solid rgba(34, 211, 238, 0.3)'
-                          }}
-                        >
-                          {skill}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
+          <button 
+            onClick={handleDownloadCV}
+            style={{
+              background: 'linear-gradient(135deg, #8b5cf6, #3b82f6)',
+              border: 'none',
+              borderRadius: '8px',
+              color: 'white',
+              cursor: 'pointer',
+              padding: '0.5rem 1.5rem',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.5rem',
+              fontSize: '0.875rem',
+              fontWeight: '600',
+              transition: 'all 0.3s ease'
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+            onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+          >
+            <Download size={16} />
+            Download CV
+          </button>
         </div>
+      </div>
+
+      {/* Main content */}
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '6rem 2rem 3rem' }}>
+        
+        {/* Chapter 1: The Beginning */}
+        <section ref={el => sectionsRef.current[0] = el} style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', marginBottom: '6rem' }}>
+          <div style={{ textAlign: 'center', maxWidth: '800px', margin: '0 auto' }}>
+            <div style={{
+              width: '30%',
+              height: '30%',
+              margin: '0 auto 2rem',
+              borderRadius: '50%',
+              overflow: 'hidden',
+              boxShadow: '0 0 60px rgba(139, 92, 246, 0.5)',
+              animation: 'float 3s ease-in-out infinite',
+              border: '4px solid transparent',
+              backgroundImage: 'linear-gradient(#0a0e27, #0a0e27), linear-gradient(135deg, #8b5cf6, #3b82f6)',
+              backgroundOrigin: 'border-box',
+              backgroundClip: 'padding-box, border-box'
+            }}>
+              <img 
+                src="/prof.jpg" 
+                alt="Athini Mgagule"
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  display: 'block'
+                }}
+              />
+            </div>
+            
+            <h2 style={{ 
+              fontSize: '3rem', 
+              fontWeight: 'bold', 
+              marginBottom: '2rem',
+              background: 'linear-gradient(135deg, #a78bfa, #60a5fa)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              lineHeight: '1.2'
+            }}>
+              Hi, I'm Athini
+            </h2>
+            
+            <div style={{ 
+              color: '#cbd5e1', 
+              fontSize: '1.125rem', 
+              lineHeight: '2',
+              textAlign: 'left',
+              background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1))',
+              padding: '2rem',
+              borderRadius: '16px',
+              border: '1px solid rgba(139, 92, 246, 0.3)',
+              marginBottom: '2rem'
+            }}>
+              <p style={{ marginBottom: '1.5rem' }}>
+                My name is <strong style={{ color: '#a78bfa' }}>Athini Mgagule</strong>, and I am a <strong style={{ color: '#a78bfa' }}>Software Developer</strong>.
+              </p>
+              <p style={{ marginBottom: '1.5rem' }}>
+                This decision didn't come easy. For a while, I was torn between many paths. Data Analytics fascinated me—I'd read articles about data science and felt intrigued by how numbers could uncover hidden insights. At one point, I wanted to dive into <strong style={{ color: '#60a5fa' }}>Cybersecurity</strong>, because the idea of making and breaking the security of systems excited me. I even imagined myself becoming a <strong style={{ color: '#60a5fa' }}>Mathematician</strong>, because I've always had a passion for numbers.
+              </p>
+              <p style={{ margin: 0 }}>
+                But recently, I realized it doesn't have to be either-or. Software development allows me to bring all those passions together. It blends mathematics, data analysis, cybersecurity, and even touches on cloud computing. It's not a narrow path—it's a canvas where I can combine my curiosity and skills to solve real problems.
+              </p>
+            </div>  
+          </div>
+        </section>
+
+        {/* Chapter 2: The Journey */}
+        <section ref={el => sectionsRef.current[1] = el} style={{ marginBottom: '6rem' }}>
+          <h2 style={{ 
+            fontSize: '2.5rem', 
+            fontWeight: 'bold', 
+            marginBottom: '3rem',
+            textAlign: 'center',
+            background: 'linear-gradient(135deg, #a78bfa, #60a5fa)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent'
+          }}>
+            The Journey Through Learning
+          </h2>
+
+          <div style={{ maxWidth: '900px', margin: '0 auto 3rem' }}>
+            <div style={{ 
+              color: '#cbd5e1', 
+              fontSize: '1.125rem', 
+              lineHeight: '2',
+              background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1))',
+              padding: '2rem',
+              borderRadius: '16px',
+              border: '1px solid rgba(139, 92, 246, 0.3)',
+              marginBottom: '3rem'
+            }}>
+              <p>
+                My academic path took me through the halls of the <strong style={{ color: '#a78bfa' }}>University of Witwatersrand</strong>, where I earned my BSc in Computer Science and Mathematics. This wasn't just about collecting credits—it was about discovering how systems think, how algorithms breathe, and how mathematics forms the language of computation.
+              </p>
+            </div>
+
+            {/* Education timeline */}
+            <div style={{ position: 'relative', paddingLeft: '3rem' }}>
+              <div style={{
+                position: 'absolute',
+                left: '1rem',
+                top: 0,
+                bottom: 0,
+                width: '2px',
+                background: 'linear-gradient(180deg, #8b5cf6, #3b82f6)',
+                opacity: 0.5
+              }} />
+
+              {/* Faith Mangope - Expandable */}
+              <div style={{ marginBottom: '2rem', position: 'relative' }}>
+                <div style={{
+                  position: 'absolute',
+                  left: '-2.25rem',
+                  top: '0.5rem',
+                  width: '16px',
+                  height: '16px',
+                  borderRadius: '50%',
+                  background: '#8b5cf6',
+                  border: '3px solid #0a0e27',
+                  boxShadow: '0 0 20px rgba(139, 92, 246, 0.6)'
+                }} />
+                <div
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1))',
+                    padding: '1.5rem',
+                    borderRadius: '12px',
+                    border: '1px solid rgba(139, 92, 246, 0.3)',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    overflow: 'hidden'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = 'rgba(139, 92, 246, 0.6)';
+                    e.currentTarget.style.transform = 'scale(1.02)';
+                    const details = e.currentTarget.querySelector('.details');
+                    if (details) {
+                      details.style.maxHeight = '500px';
+                      details.style.opacity = '1';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = 'rgba(139, 92, 246, 0.3)';
+                    e.currentTarget.style.transform = 'scale(1)';
+                    const details = e.currentTarget.querySelector('.details');
+                    if (details) {
+                      details.style.maxHeight = '0';
+                      details.style.opacity = '0';
+                    }
+                  }}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                    <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', margin: 0, color: '#a78bfa' }}>Software Development & Data Analytics</h3>
+                    <span style={{ color: '#94a3b8', fontSize: '0.875rem' }}>03/2025 - Present</span>
+                  </div>
+                  <p style={{ color: '#cbd5e1', margin: '0.5rem 0' }}>Faith Mangope Technology and Leadership Institute</p>
+                  <p style={{ color: '#94a3b8', fontSize: '0.875rem', margin: 0 }}>Azure Cloud Computing • Java OCA • Microsoft Power BI</p>
+                  
+                  <div className="details" style={{ 
+                    maxHeight: '0', 
+                    opacity: '0',
+                    overflow: 'hidden',
+                    transition: 'all 0.5s ease',
+                    marginTop: '1rem'
+                  }}>
+                    <div style={{ 
+                      borderTop: '1px solid rgba(139, 92, 246, 0.3)', 
+                      paddingTop: '1rem',
+                      color: '#cbd5e1',
+                      fontSize: '0.9rem',
+                      lineHeight: '1.8'
+                    }}>
+                      <p style={{ marginBottom: '1rem' }}>
+                        Currently enrolled in an intensive programme focused on enterprise-level software development and data analytics. This program combines hands-on projects with industry certifications to prepare for modern tech environments.
+                      </p>
+                      <p style={{ marginBottom: '1rem' }}>
+                        <strong style={{ color: '#a78bfa' }}>Key Areas:</strong> Working extensively with Azure cloud infrastructure, developing applications, and mastering data visualization with Power BI.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Wits University - Expandable */}
+              <div style={{ marginBottom: '2rem', position: 'relative' }}>
+                <div style={{
+                  position: 'absolute',
+                  left: '-2.25rem',
+                  top: '0.5rem',
+                  width: '16px',
+                  height: '16px',
+                  borderRadius: '50%',
+                  background: '#3b82f6',
+                  border: '3px solid #0a0e27',
+                  boxShadow: '0 0 20px rgba(59, 130, 246, 0.6)'
+                }} />
+                <div
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1))',
+                    padding: '1.5rem',
+                    borderRadius: '12px',
+                    border: '1px solid rgba(139, 92, 246, 0.3)',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    overflow: 'hidden'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = 'rgba(59, 130, 246, 0.6)';
+                    e.currentTarget.style.transform = 'scale(1.02)';
+                    const details = e.currentTarget.querySelector('.details');
+                    if (details) {
+                      details.style.maxHeight = '500px';
+                      details.style.opacity = '1';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = 'rgba(139, 92, 246, 0.3)';
+                    e.currentTarget.style.transform = 'scale(1)';
+                    const details = e.currentTarget.querySelector('.details');
+                    if (details) {
+                      details.style.maxHeight = '0';
+                      details.style.opacity = '0';
+                    }
+                  }}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                    <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', margin: 0, color: '#60a5fa' }}>BSc Computer Science and Mathematics</h3>
+                    <span style={{ color: '#94a3b8', fontSize: '0.875rem' }}>02/2022 - 11/2024</span>
+                  </div>
+                  <p style={{ color: '#cbd5e1', margin: '0.5rem 0' }}>University of Witwatersrand</p>
+                  <div style={{
+                    background: 'rgba(234, 179, 8, 0.2)',
+                    color: '#fde047',
+                    padding: '0.375rem 1rem',
+                    borderRadius: '20px',
+                    fontSize: '0.875rem',
+                    border: '1px solid rgba(234, 179, 8, 0.3)',
+                    display: 'inline-block',
+                    marginTop: '0.5rem'
+                  }}>
+                    Certificate of Merit: Positive Linear Systems III
+                  </div>
+                  
+                  <div className="details" style={{ 
+                    maxHeight: '0', 
+                    opacity: '0',
+                    overflow: 'hidden',
+                    transition: 'all 0.5s ease',
+                    marginTop: '1rem'
+                  }}>
+                    <div style={{ 
+                      borderTop: '1px solid rgba(59, 130, 246, 0.3)', 
+                      paddingTop: '1rem',
+                      color: '#cbd5e1',
+                      fontSize: '0.9rem',
+                      lineHeight: '1.8'
+                    }}>
+                      <p style={{ marginBottom: '1rem' }}>
+                        A rigorous program combining theoretical computer science with advanced mathematics. This dual focus gave me a unique perspective on algorithm design, computational complexity, and the mathematical foundations of modern software systems.
+                      </p>
+                      <p style={{ marginBottom: '1rem' }}>
+                        <strong style={{ color: '#60a5fa' }}>Core Coursework:</strong> Software Design, Operating Systems, Coding and Cryptography, Advanced Analysis of Algorithms, Computer Networks, Mechanics, Abstract Mathematics, Database Fundamentals, Algebra Calculus, Data Structures and Algorithms
+                      </p>
+                      <p style={{ margin: 0 }}>
+                        <strong style={{ color: '#60a5fa' }}>Notable Achievement:</strong> Received a Certificate of Merit for exceptional performance in Positive Linear Systems III, demonstrating strong analytical and problem-solving abilities in advanced mathematical modeling.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* High School - Expandable */}
+              <div style={{ position: 'relative' }}>
+                <div style={{
+                  position: 'absolute',
+                  left: '-2.25rem',
+                  top: '0.5rem',
+                  width: '16px',
+                  height: '16px',
+                  borderRadius: '50%',
+                  background: '#6366f1',
+                  border: '3px solid #0a0e27'
+                }} />
+                <div
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1))',
+                    padding: '1.5rem',
+                    borderRadius: '12px',
+                    border: '1px solid rgba(139, 92, 246, 0.3)',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s ease',
+                    overflow: 'hidden'
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.borderColor = 'rgba(99, 102, 241, 0.6)';
+                    e.currentTarget.style.transform = 'scale(1.02)';
+                    const details = e.currentTarget.querySelector('.details');
+                    if (details) {
+                      details.style.maxHeight = '500px';
+                      details.style.opacity = '1';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.borderColor = 'rgba(139, 92, 246, 0.3)';
+                    e.currentTarget.style.transform = 'scale(1)';
+                    const details = e.currentTarget.querySelector('.details');
+                    if (details) {
+                      details.style.maxHeight = '0';
+                      details.style.opacity = '0';
+                    }
+                  }}
+                >
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                    <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', margin: 0 }}>National Senior Certificate</h3>
+                    <span style={{ color: '#94a3b8', fontSize: '0.875rem' }}>01/2017 - 12/2021</span>
+                  </div>
+                  <p style={{ color: '#cbd5e1', margin: 0 }}>Leap Science and Maths School</p>
+                  
+                  <div className="details" style={{ 
+                    maxHeight: '0', 
+                    opacity: '0',
+                    overflow: 'hidden',
+                    transition: 'all 0.5s ease',
+                    marginTop: '1rem'
+                  }}>
+                    <div style={{ 
+                      borderTop: '1px solid rgba(99, 102, 241, 0.3)', 
+                      paddingTop: '1rem',
+                      color: '#cbd5e1',
+                      fontSize: '0.9rem',
+                      lineHeight: '1.8'
+                    }}>
+                      <p style={{ marginBottom: '1rem' }}>
+                        Attended a specialized STEM-focused high school that laid the foundation for my technical career. The rigorous curriculum emphasized mathematics and sciences, preparing students for careers in technology and engineering.
+                      </p>
+                      <p style={{ margin: 0 }}>
+                        <strong style={{ color: '#a78bfa' }}>Key Subjects:</strong> Mathematics, Physical Sciences, Life Sciences, and Accounting. This diverse foundation developed both analytical thinking and attention to detail that continues to serve me in software development.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+
+        {/* Chapter 4: The Work */}
+        <section ref={el => sectionsRef.current[3] = el} style={{ marginBottom: '6rem' }}>
+          <h2 style={{ 
+            fontSize: '2.5rem', 
+            fontWeight: 'bold', 
+            marginBottom: '3rem',
+            textAlign: 'center',
+            background: 'linear-gradient(135deg, #a78bfa, #60a5fa)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent'
+          }}>
+            Building Solutions
+          </h2>
+
+          <div style={{ maxWidth: '900px', margin: '0 auto' }}>
+            <div style={{ 
+              color: '#cbd5e1', 
+              fontSize: '1.125rem', 
+              lineHeight: '2',
+              background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1))',
+              padding: '2rem',
+              borderRadius: '16px',
+              border: '1px solid rgba(139, 92, 246, 0.3)',
+              marginBottom: '3rem'
+            }}>
+              <p>
+                Every project tells a story of a problem that needed solving. Here's how I've been turning ideas into reality:
+              </p>
+            </div>
+
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+              <EnhancedProjectCard/>
+            </div>
+
+            <div style={{ marginTop: '3rem' }}>
+              <h3 style={{ fontSize: '1.75rem', fontWeight: 'bold', marginBottom: '2rem', color: '#60a5fa' }}>
+                My Toolkit
+              </h3>
+              <div style={{
+                background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1))',
+                padding: '2rem',
+                borderRadius: '16px',
+                border: '1px solid rgba(139, 92, 246, 0.3)'
+              }}>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
+                  {['Java', 'Python', 'JavaScript', 'React', 'Node.js', 'Spring Boot', 'MySQL', 'PostgreSQL', 'SQLite', 'Azure Cloud', 'Data Analytics', 'REST APIs', 'Agile/Scrum', 'Git', 'Problem Solving', 'Team Leadership'].map((skill, i) => (
+                    <span key={i} style={{
+                      background: 'rgba(139, 92, 246, 0.2)',
+                      color: '#c4b5fd',
+                      padding: '0.5rem 1.25rem',
+                      borderRadius: '25px',
+                      fontSize: '0.875rem',
+                      border: '1px solid rgba(139, 92, 246, 0.3)',
+                      transition: 'all 0.3s ease',
+                      cursor: 'default'
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = 'rgba(139, 92, 246, 0.3)';
+                      e.currentTarget.style.transform = 'translateY(-2px)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = 'rgba(139, 92, 246, 0.2)';
+                      e.currentTarget.style.transform = 'translateY(0)';
+                    }}>
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Chapter 5: What's Next */}
+        <section ref={el => sectionsRef.current[4] = el} style={{ minHeight: '80vh', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+          <div style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'center' }}>
+            <h2 style={{ 
+              fontSize: '3rem', 
+              fontWeight: 'bold', 
+              marginBottom: '2rem',
+              background: 'linear-gradient(135deg, #a78bfa, #60a5fa)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent'
+            }}>
+              What's Next?
+            </h2>
+            
+            <div style={{ 
+              color: '#cbd5e1', 
+              fontSize: '1.25rem', 
+              lineHeight: '2',
+              background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1))',
+              padding: '2.5rem',
+              borderRadius: '16px',
+              border: '1px solid rgba(139, 92, 246, 0.3)',
+              marginBottom: '3rem'
+            }}>
+              <p style={{ marginBottom: '1.5rem' }}>
+                I'm actively seeking opportunities to join teams that value <strong style={{ color: '#a78bfa' }}>innovation</strong>, <strong style={{ color: '#60a5fa' }}>collaboration</strong>, and <strong style={{ color: '#a78bfa' }}>continuous learning</strong>.
+              </p>
+              <p style={{ margin: 0 }}>
+                Whether it's building scalable web applications, diving into data-driven solutions, or exploring the intersection of AI and software development—I'm ready to contribute, learn, and grow.
+              </p>
+            </div>
+
+            <div style={{ 
+              display: 'flex', 
+              justifyContent: 'center', 
+              gap: '1.5rem',
+              flexWrap: 'wrap'
+            }}>
+              <a
+                href="mailto:athi200308@gmail.com"
+                style={{
+                  background: 'linear-gradient(135deg, #8b5cf6, #3b82f6)',
+                  border: 'none',
+                  borderRadius: '12px',
+                  color: 'white',
+                  padding: '1rem 2rem',
+                  fontSize: '1.125rem',
+                  fontWeight: '600',
+                  textDecoration: 'none',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.75rem',
+                  transition: 'all 0.3s ease',
+                  boxShadow: '0 10px 30px rgba(139, 92, 246, 0.3)'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-5px)';
+                  e.currentTarget.style.boxShadow = '0 15px 40px rgba(139, 92, 246, 0.5)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 10px 30px rgba(139, 92, 246, 0.3)';
+                }}
+              >
+                <Mail size={20} />
+                Get in Touch
+              </a>
+
+              <button
+                onClick={handleDownloadCV}
+                style={{
+                  background: 'transparent',
+                  border: '2px solid #8b5cf6',
+                  borderRadius: '12px',
+                  color: '#a78bfa',
+                  padding: '1rem 2rem',
+                  fontSize: '1.125rem',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.75rem',
+                  transition: 'all 0.3s ease'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = 'rgba(139, 92, 246, 0.1)';
+                  e.currentTarget.style.transform = 'translateY(-5px)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = 'transparent';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                }}
+              >
+                <Download size={20} />
+                Download Resume
+              </button>
+            </div>
+            <p></p>
+
+            {/* Social links */}
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem' }}>
+              <a href="https://linkedin.com/in/athini-mgagule-8b8b362b2" target="_blank" rel="noopener noreferrer"
+                style={{ width: '48px', height: '48px', background: '#2563eb', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.3s ease' }}
+                onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 10px 25px rgba(37, 99, 235, 0.5)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}>
+                <Linkedin size={20} color="white" />
+              </a>
+              <a href="https://github.com/AthiniMgagule" target="_blank" rel="noopener noreferrer"
+                style={{ width: '48px', height: '48px', background: '#374151', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.3s ease' }}
+                onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 10px 25px rgba(55, 65, 81, 0.5)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}>
+                <Github size={20} color="white" />
+              </a>
+              <a href="https://athinimgagule.netlify.app" target="_blank" rel="noopener noreferrer"
+                style={{ width: '48px', height: '48px', background: '#0891b2', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.3s ease' }}
+                onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 10px 25px rgba(8, 145, 178, 0.5)'; }}
+                onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}>
+                <Globe size={20} color="white" />
+              </a>
+            </div>
+
+            <p style={{ 
+              marginTop: '3rem', 
+              color: '#64748b', 
+              fontSize: '0.875rem',
+              fontStyle: 'italic'
+            }}>
+              "The best way to predict the future is to create it."
+            </p>
+          </div>
+        </section>
       </div>
 
       <style>
         {`
-          @keyframes pulse {
-            0%, 100% { opacity: 0.2; }
-            50% { opacity: 0.8; }
+          @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
           }
           
           * {
@@ -948,7 +712,28 @@ const InteractiveResume = () => {
           
           body {
             margin: 0;
-            font-family: system-ui, -apple-system, sans-serif;
+            background: #0a0e27;
+          }
+          
+          html {
+            scroll-behavior: smooth;
+          }
+
+          ::-webkit-scrollbar {
+            width: 10px;
+          }
+
+          ::-webkit-scrollbar-track {
+            background: #1a1142;
+          }
+
+          ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #8b5cf6, #3b82f6);
+            border-radius: 5px;
+          }
+
+          ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #a78bfa, #60a5fa);
           }
         `}
       </style>
@@ -956,4 +741,4 @@ const InteractiveResume = () => {
   );
 };
 
-export default InteractiveResume;
+export default StoryPortfolio;
