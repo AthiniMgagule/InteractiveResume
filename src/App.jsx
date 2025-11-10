@@ -1,12 +1,477 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Mail, Phone, MapPin, Github, Linkedin, Globe, Award, Code, Download, Lightbulb, Star, Target, Rocket, BookOpen } from 'lucide-react';
+import { Mail, Phone, MapPin, Github, Linkedin, Globe, Award, Code, Download, Lightbulb, Star, Target, Rocket, BookOpen, Menu, X, ExternalLink, AlertCircle, Terminal, Zap, Database, Cpu } from 'lucide-react';
 
-import EnhancedProjectCard from './EnhancedProjectCard';
+const Badge = ({ children, variant = 'primary' }) => {
+  const variants = {
+    primary: { bg: 'rgba(0, 255, 200, 0.15)', color: '#00ffc8', border: 'rgba(0, 255, 200, 0.3)' },
+    secondary: { bg: 'rgba(255, 20, 147, 0.15)', color: '#ff1493', border: 'rgba(255, 20, 147, 0.3)' },
+    accent: { bg: 'rgba(255, 165, 0, 0.15)', color: '#ffa500', border: 'rgba(255, 165, 0, 0.3)' }
+  };
+  
+  const v = variants[variant];
+  return (
+    <span style={{
+      background: v.bg,
+      color: v.color,
+      padding: '0.35rem 0.8rem',
+      borderRadius: 18,
+      fontSize: '0.875rem',
+      border: `1px solid ${v.border}`,
+      display: 'inline-block'
+    }}>{children}</span>
+  );
+};
 
-const StoryPortfolio = () => {
+// Particle System for Hero (Optimized)
+const ParticleField = () => {
+  const canvasRef = useRef(null);
+  
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+    
+    const particles = [];
+    const particleCount = 40;
+    
+    class Particle {
+      constructor() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.vx = (Math.random() - 0.5) * 0.5;
+        this.vy = (Math.random() - 0.5) * 0.5;
+        this.radius = Math.random() * 2 + 1;
+        this.color = Math.random() > 0.5 ? '#00ffc8' : '#ff1493';
+      }
+      
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        
+        if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
+        if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
+      }
+      
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
+        ctx.fillStyle = this.color;
+        ctx.fill();
+      }
+    }
+    
+    for (let i = 0; i < particleCount; i++) {
+      particles.push(new Particle());
+    }
+    
+    const animate = () => {
+      ctx.fillStyle = 'rgba(15, 15, 30, 0.1)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      
+      particles.forEach(particle => {
+        particle.update();
+        particle.draw();
+      });
+      
+      for (let i = 0; i < particles.length; i++) {
+        for (let j = i + 1; j < Math.min(i + 5, particles.length); j++) {
+          const dx = particles[i].x - particles[j].x;
+          const dy = particles[i].y - particles[j].y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+          
+          if (distance < 100) {
+            ctx.beginPath();
+            ctx.strokeStyle = `rgba(0, 255, 200, ${1 - distance / 120})`;
+            ctx.lineWidth = 0.5;
+            ctx.moveTo(particles[i].x, particles[i].y);
+            ctx.lineTo(particles[j].x, particles[j].y);
+            ctx.stroke();
+          }
+        }
+      }
+      
+      requestAnimationFrame(animate);
+    };
+    
+    animate();
+    
+    const handleResize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    };
+    
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+  
+  return <canvas ref={canvasRef} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: 0.3 }} />;
+};
+
+// Typewriter Effect
+const TypewriterText = ({ text, speed = 50 }) => {
+  const [displayText, setDisplayText] = useState('');
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [showCursor, setShowCursor] = useState(true);
+  
+  useEffect(() => {
+    if (currentIndex < text.length) {
+      const timeout = setTimeout(() => {
+        setDisplayText(prev => prev + text[currentIndex]);
+        setCurrentIndex(prev => prev + 1);
+      }, speed);
+      return () => clearTimeout(timeout);
+    }
+  }, [currentIndex, text, speed]);
+  
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setShowCursor(prev => !prev);
+    }, 500);
+    return () => clearInterval(interval);
+  }, []);
+  
+  return (
+    <span>
+      {displayText}
+      <span style={{ opacity: showCursor ? 1 : 0, color: '#00ffc8' }}>|</span>
+    </span>
+  );
+};
+
+// 3D Tilting Project Card (Optimized with throttling)
+const TiltCard = ({ children, style }) => {
+  const [tilt, setTilt] = useState({ x: 0, y: 0 });
+  const [isHovering, setIsHovering] = useState(false);
+  const throttleTimer = useRef(null);
+  
+  const handleMouseMove = (e) => {
+    if (throttleTimer.current) return;
+    
+    throttleTimer.current = setTimeout(() => {
+      throttleTimer.current = null;
+    }, 16);
+    
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = (e.clientX - rect.left) / rect.width - 0.5;
+    const y = (e.clientY - rect.top) / rect.height - 0.5;
+    setTilt({ x: y * 10, y: -x * 10 });
+  };
+  
+  const handleMouseLeave = () => {
+    setTilt({ x: 0, y: 0 });
+    setIsHovering(false);
+  };
+  
+  return (
+    <div
+      onMouseMove={handleMouseMove}
+      onMouseEnter={() => setIsHovering(true)}
+      onMouseLeave={handleMouseLeave}
+      style={{
+        ...style,
+        transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) scale(${isHovering ? 1.02 : 1})`,
+        transition: 'transform 0.1s ease-out',
+        transformStyle: 'preserve-3d'
+      }}
+    >
+      {children}
+    </div>
+  );
+};
+
+// Interactive Skill Graph
+const SkillGraph = () => {
+  const canvasRef = useRef(null);
+  const [hoveredSkill, setHoveredSkill] = useState(null);
+  
+  const skills = [
+    { name: 'React', x: 150, y: 150, color: '#00ffc8', connects: ['Node.js', 'JavaScript', 'HTML/CSS'] },
+    { name: 'Node.js', x: 350, y: 150, color: '#ff1493', connects: ['React', 'MySQL', 'REST API', 'Python'] },
+    { name: 'Java', x: 250, y: 50, color: '#ffa500', connects: ['Spring Boot', 'MySQL'] },
+    { name: 'Spring Boot', x: 450, y: 50, color: '#00ffc8', connects: ['Java', 'REST API'] },
+    { name: 'MySQL', x: 350, y: 250, color: '#ff1493', connects: ['Node.js', 'Java', 'SQL', 'Python'] },
+    { name: 'JavaScript', x: 50, y: 250, color: '#ffa500', connects: ['React', 'HTML/CSS'] },
+    { name: 'HTML/CSS', x: 50, y: 350, color: '#00ffc8', connects: ['JavaScript', 'React'] },
+    { name: 'REST API', x: 450, y: 250, color: '#ff1493', connects: ['Node.js', 'Spring Boot', 'Python'] },
+    { name: 'SQL', x: 250, y: 350, color: '#ffa500', connects: ['MySQL'] },
+    { name: 'Python', x: 150, y: 50, color: '#ff1493', connects: ['Node.js', 'REST API', 'MySQL'] }
+  ];
+  
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    
+    const ctx = canvas.getContext('2d');
+    canvas.width = 500;
+    canvas.height = 400;
+    
+    const drawGraph = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      skills.forEach(skill => {
+        skill.connects.forEach(connectionName => {
+          const target = skills.find(s => s.name === connectionName);
+          if (target) {
+            ctx.beginPath();
+            ctx.moveTo(skill.x, skill.y);
+            ctx.lineTo(target.x, target.y);
+            ctx.strokeStyle = hoveredSkill === skill.name || hoveredSkill === connectionName
+              ? 'rgba(0, 255, 200, 0.6)'
+              : 'rgba(255, 255, 255, 0.1)';
+            ctx.lineWidth = hoveredSkill === skill.name || hoveredSkill === connectionName ? 2 : 1;
+            ctx.stroke();
+          }
+        });
+      });
+      
+      skills.forEach(skill => {
+        ctx.beginPath();
+        ctx.arc(skill.x, skill.y, hoveredSkill === skill.name ? 30 : 20, 0, Math.PI * 2);
+        ctx.fillStyle = skill.color;
+        ctx.globalAlpha = hoveredSkill === skill.name ? 1 : 0.6;
+        ctx.fill();
+        ctx.globalAlpha = 1;
+        
+        ctx.fillStyle = '#0f0f1e';
+        ctx.font = 'bold 11px system-ui';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(skill.name, skill.x, skill.y);
+      });
+    };
+    
+    drawGraph();
+  }, [hoveredSkill]);
+  
+  const handleCanvasHover = (e) => {
+    const canvas = canvasRef.current;
+    const rect = canvas.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    let foundSkill = null;
+    skills.forEach(skill => {
+      const distance = Math.sqrt((x - skill.x) ** 2 + (y - skill.y) ** 2);
+      if (distance < 20) {
+        foundSkill = skill.name;
+      }
+    });
+    
+    setHoveredSkill(foundSkill);
+  };
+  
+  return (
+    <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2rem' }}>
+      <canvas
+        ref={canvasRef}
+        onMouseMove={handleCanvasHover}
+        onMouseLeave={() => setHoveredSkill(null)}
+        style={{ cursor: 'pointer', maxWidth: '100%' }}
+      />
+    </div>
+  );
+};
+
+// Live URL Shortener Demo
+const LiveURLShortener = () => {
+  const [url, setUrl] = useState('');
+  const [shortened, setShortened] = useState('');
+  const [loading, setLoading] = useState(false);
+  
+  const generateShortCode = (url) => {
+    const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let result = '';
+    for (let i = 0; i < 6; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return result;
+  };
+  
+  const handleShorten = () => {
+    if (!url) return;
+    setLoading(true);
+    setTimeout(() => {
+      setShortened(`short.ly/${generateShortCode(url)}`);
+      setLoading(false);
+    }, 800);
+  };
+  
+  return (
+    <div style={{
+      background: 'linear-gradient(135deg, rgba(0, 255, 200, 0.08), rgba(255, 20, 147, 0.08))',
+      padding: '2rem',
+      borderRadius: '16px',
+      border: '1px solid rgba(0, 255, 200, 0.2)',
+      marginTop: '1rem'
+    }}>
+      <h4 style={{ color: '#00ffc8', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        <Zap size={20} />
+        Try It Live
+      </h4>
+      <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+        <input
+          type="text"
+          value={url}
+          onChange={(e) => setUrl(e.target.value)}
+          placeholder="Enter a long URL..."
+          style={{
+            flex: 1,
+            minWidth: '200px',
+            padding: '0.75rem',
+            background: 'rgba(0, 0, 0, 0.3)',
+            border: '1px solid rgba(0, 255, 200, 0.3)',
+            borderRadius: '8px',
+            color: '#e0e0e0',
+            fontSize: '0.9rem'
+          }}
+        />
+        <button
+          onClick={handleShorten}
+          disabled={loading}
+          style={{
+            padding: '0.75rem 1.5rem',
+            background: 'linear-gradient(135deg, #00ffc8, #ff1493)',
+            border: 'none',
+            borderRadius: '8px',
+            color: '#0f0f1e',
+            fontWeight: 'bold',
+            cursor: loading ? 'wait' : 'pointer',
+            opacity: loading ? 0.6 : 1
+          }}
+        >
+          {loading ? 'Shortening...' : 'Shorten'}
+        </button>
+      </div>
+      {shortened && (
+        <div style={{
+          marginTop: '1rem',
+          padding: '1rem',
+          background: 'rgba(0, 255, 200, 0.1)',
+          border: '1px solid rgba(0, 255, 200, 0.3)',
+          borderRadius: '8px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.5rem'
+        }}>
+          <code style={{ color: '#00ffc8', flex: 1 }}>{shortened}</code>
+          <button
+            onClick={() => navigator.clipboard.writeText(shortened)}
+            style={{
+              padding: '0.5rem',
+              background: 'transparent',
+              border: '1px solid rgba(0, 255, 200, 0.3)',
+              borderRadius: '6px',
+              color: '#00ffc8',
+              cursor: 'pointer'
+            }}
+          >
+            Copy
+          </button>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// Terminal-style Code Block
+const TerminalBlock = ({ code }) => {
+  const [displayedLines, setDisplayedLines] = useState([]);
+  const lines = code.split('\n');
+  
+  useEffect(() => {
+    lines.forEach((line, index) => {
+      setTimeout(() => {
+        setDisplayedLines(prev => [...prev, line]);
+      }, index * 100);
+    });
+  }, []);
+  
+  return (
+    <div style={{
+      background: '#1a1a2e',
+      borderRadius: '8px',
+      padding: '1rem',
+      fontFamily: 'Monaco, Courier, monospace',
+      fontSize: '0.85rem',
+      overflow: 'auto',
+      border: '1px solid rgba(0, 255, 200, 0.2)'
+    }}>
+      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
+        <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#ff5f56' }}></div>
+        <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#ffbd2e' }}></div>
+        <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#27c93f' }}></div>
+      </div>
+      {displayedLines.map((line, i) => (
+        <div key={i} style={{ color: '#00ffc8', marginBottom: '0.25rem' }}>
+          <span style={{ color: '#888' }}>$ </span>{line}
+        </div>
+      ))}
+    </div>
+  );
+};
+
+// Magnetic Button (Optimized with throttling)
+const MagneticButton = ({ children, href, onClick, style }) => {
+  const [position, setPosition] = useState({ x: 0, y: 0 });
+  const buttonRef = useRef(null);
+  const throttleTimer = useRef(null);
+  
+  const handleMouseMove = (e) => {
+    if (throttleTimer.current) return;
+    
+    throttleTimer.current = setTimeout(() => {
+      throttleTimer.current = null;
+    }, 16);
+    
+    if (!buttonRef.current) return;
+    const rect = buttonRef.current.getBoundingClientRect();
+    const x = (e.clientX - rect.left - rect.width / 2) * 0.2;
+    const y = (e.clientY - rect.top - rect.height / 2) * 0.2;
+    setPosition({ x, y });
+  };
+  
+  const handleMouseLeave = () => {
+    setPosition({ x: 0, y: 0 });
+  };
+  
+  const Element = href ? 'a' : 'button';
+  
+  return (
+    <Element
+      ref={buttonRef}
+      href={href}
+      onClick={onClick}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      style={{
+        ...style,
+        transform: `translate(${position.x}px, ${position.y}px)`,
+        transition: 'transform 0.2s ease-out',
+        textDecoration: 'none'
+      }}
+    >
+      {children}
+    </Element>
+  );
+};
+
+const Portfolio = () => {
   const [scrollY, setScrollY] = useState(0);
   const [activeChapter, setActiveChapter] = useState(0);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const sectionsRef = useRef([]);
+
+  const handleDownloadCV = () => {
+    const link = document.createElement('a');
+    link.href = 'https://drive.google.com/uc?export=download&id=1iJ4zLlb196IW63VwQ9_FlB2zFcoOnIfH';
+    link.download = 'Athini_Mgagule_Resume.pdf';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -20,42 +485,89 @@ const StoryPortfolio = () => {
       });
     };
     
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    let scrollTimeout;
+    const throttledScroll = () => {
+      if (!scrollTimeout) {
+        scrollTimeout = setTimeout(() => {
+          handleScroll();
+          scrollTimeout = null;
+        }, 16);
+      }
+    };
+    
+    window.addEventListener('scroll', throttledScroll);
+    return () => {
+      window.removeEventListener('scroll', throttledScroll);
+    };
   }, []);
-
-  const handleDownloadCV = () => {
-    const urlDrive = 'https://drive.google.com/file/d/1PAGZxXQBVNgMZz64oh61jquIhKlBroXN/view?usp=drive_link';
-    const link = document.createElement('a');
-    link.href = urlDrive;
-    link.target = '_blank';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  };
 
   const chapters = [
     { id: 'intro', label: 'The Beginning', icon: Lightbulb },
     { id: 'journey', label: 'The Journey', icon: Star },
-    { id: 'proof', label: 'The Work', icon: Code },
+    { id: 'skills', label: 'Skills & Tools', icon: Target },
+    { id: 'work', label: 'The Work', icon: Code },
     { id: 'future', label: 'Next Chapter', icon: Rocket }
   ];
 
   const scrollToSection = (index) => {
     if (sectionsRef.current[index]) {
       sectionsRef.current[index].scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setMobileMenuOpen(false);
     }
   };
+
+  const projects = [
+    {
+      title: 'GentestAI',
+      period: '10/2025 - Ongoing',
+      badges: ['AI', 'Testing', 'StarCoder2', 'Mistral'],
+      description: 'Building an AI-powered testing companion that generates test cases from code changes. Integrating StarCoder2 and Mistral models through Node.js and Python APIs with a React dashboard. Learning about AI integration and real-time code analysis.',
+      metrics: ['Multi-Model AI', 'Active Development'],
+      codeUrl: 'https://github.com/Picca1e-12/GentestAI',
+      tech: ['React', 'Node.js', 'Python', 'StarCoder2', 'Mistral', 'REST API'],
+      image: 'https://via.placeholder.com/800x400/1a1a2e/00ffc8?text=GentestAI+Dashboard'
+    },
+    {
+      title: 'URL Shortener',
+      period: '08/2025 - 09/2025',
+      badges: ['Spring Boot', 'MySQL', 'React'],
+      description: 'Built a URL shortening service using Spring Boot and MySQL with Base62 encoding. Focused on learning proper REST API design and database optimization techniques.',
+      metrics: ['Full-Stack Project', 'REST API'],
+      codeUrl: 'https://github.com/AthiniMgagule/URLShortener',
+      tech: ['React', 'Spring Boot', 'MySQL', 'REST API'],
+      image: 'https://via.placeholder.com/800x400/1a1a2e/ff1493?text=URL+Shortener'
+    },
+    {
+      title: 'WriteWisp',
+      period: '07/2025 - Ongoing',
+      badges: ['React', 'Node.js', 'Llama'],
+      description: 'Developing a writing assistant with AI-powered prompt suggestions using NVIDIA\'s Meta AI (Llama). Features include autosave and version control. Learning about AI model integration and state management.',
+      metrics: ['AI Integration', 'In Progress'],
+      codeUrl: 'https://github.com/AthiniMgagule/WriteWisp',
+      tech: ['React', 'Node.js', 'MySQL', 'NVIDIA AI', 'Llama'],
+      image: 'https://via.placeholder.com/800x400/1a1a2e/00ffc8?text=WriteWisp+Editor'
+    },
+    {
+      title: 'ApplyConnect',
+      period: 'Ongoing',
+      badges: ['PWA', 'React', 'Node.js'],
+      description: 'Creating an offline-first bursary aggregator for students with limited internet access. Implementing PWA features and exploring web scraping. Building with South African students in mind.',
+      metrics: ['PWA Features', 'Social Impact'],
+      tech: ['React', 'Node.js', 'IndexedDB', 'Puppeteer'],
+      image: 'https://via.placeholder.com/800x400/1a1a2e/ffa500?text=ApplyConnect'
+    }
+  ];
 
   return (
     <div style={{
       minHeight: '100vh',
-      background: 'linear-gradient(180deg, #0a0e27 0%, #1a1142 50%, #0a0e27 100%)',
-      color: '#e2e8f0',
+      background: 'linear-gradient(180deg, #0f0f1e 0%, #1a1a2e 50%, #0f0f1e 100%)',
+      color: '#e0e0e0',
       fontFamily: 'system-ui, -apple-system, sans-serif',
-      position: 'relative'
+      position: 'relative',
+      overflow: 'hidden'
     }}>
-      {/* Navigation dots */}
+      {/* Desktop Navigation */}
       <div style={{
         position: 'fixed',
         right: '2rem',
@@ -76,11 +588,10 @@ const StoryPortfolio = () => {
               alignItems: 'center',
               gap: '0.75rem',
               transition: 'all 0.3s ease'
-            }}
-          >
+            }}>
             <span style={{
               fontSize: '0.75rem',
-              color: activeChapter === index ? '#a78bfa' : '#64748b',
+              color: activeChapter === index ? '#00ffc8' : '#555',
               opacity: activeChapter === index ? 1 : 0,
               transform: activeChapter === index ? 'translateX(0)' : 'translateX(10px)',
               transition: 'all 0.3s ease',
@@ -92,509 +603,591 @@ const StoryPortfolio = () => {
               width: activeChapter === index ? '12px' : '8px',
               height: activeChapter === index ? '12px' : '8px',
               borderRadius: '50%',
-              background: activeChapter === index ? '#a78bfa' : '#334155',
-              border: `2px solid ${activeChapter === index ? '#c4b5fd' : '#475569'}`,
+              background: activeChapter === index ? '#00ffc8' : '#333',
+              border: `2px solid ${activeChapter === index ? '#00ffc8' : '#444'}`,
               transition: 'all 0.3s ease',
-              boxShadow: activeChapter === index ? '0 0 20px rgba(167, 139, 250, 0.5)' : 'none'
+              boxShadow: activeChapter === index ? '0 0 20px rgba(0, 255, 200, 0.6)' : 'none'
             }} />
           </div>
         ))}
       </div>
 
-      {/* Fixed header */}
+      {/* Mobile Menu */}
+      {window.innerWidth <= 768 && (
+        <>
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            style={{
+              position: 'fixed',
+              bottom: '2rem',
+              right: '2rem',
+              zIndex: 2000,
+              width: '56px',
+              height: '56px',
+              borderRadius: '50%',
+              background: 'linear-gradient(135deg, #00ffc8, #ff1493)',
+              border: 'none',
+              color: '#0f0f1e',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              boxShadow: '0 10px 30px rgba(0, 255, 200, 0.4)'
+            }}
+          >
+            {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+
+          {mobileMenuOpen && (
+            <div style={{
+              position: 'fixed',
+              bottom: '5rem',
+              right: '2rem',
+              zIndex: 1999,
+              background: 'rgba(15, 15, 30, 0.98)',
+              backdropFilter: 'blur(10px)',
+              borderRadius: '12px',
+              padding: '1rem',
+              border: '1px solid rgba(0, 255, 200, 0.3)',
+              boxShadow: '0 10px 40px rgba(0, 0, 0, 0.5)'
+            }}>
+              {chapters.map((chapter, index) => (
+                <button
+                  key={chapter.id}
+                  onClick={() => scrollToSection(index)}
+                  style={{
+                    display: 'block',
+                    width: '100%',
+                    padding: '0.75rem 1rem',
+                    marginBottom: '0.5rem',
+                    background: activeChapter === index ? 'rgba(0, 255, 200, 0.2)' : 'transparent',
+                    border: 'none',
+                    borderRadius: '8px',
+                    color: activeChapter === index ? '#00ffc8' : '#e0e0e0',
+                    textAlign: 'left',
+                    cursor: 'pointer',
+                    fontSize: '0.875rem',
+                    fontWeight: activeChapter === index ? '600' : '400',
+                    transition: 'all 0.2s ease'
+                  }}
+                >
+                  {chapter.label}
+                </button>
+              ))}
+            </div>
+          )}
+        </>
+      )}
+
+      {/* Header */}
       <div style={{
         position: 'fixed',
         top: 0,
         left: 0,
         right: 0,
-        background: `rgba(10, 14, 39, ${Math.min(scrollY / 200, 0.95)})`,
+        background: `rgba(15, 15, 30, ${Math.min(scrollY / 200, 0.95)})`,
         backdropFilter: 'blur(10px)',
-        borderBottom: '1px solid rgba(139, 92, 246, 0.2)',
+        borderBottom: '1px solid rgba(0, 255, 200, 0.15)',
         padding: '1rem 2rem',
         zIndex: 999,
         transition: 'all 0.3s ease'
       }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
           <div>
-            <h1 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 'bold', background: 'linear-gradient(135deg, #a78bfa, #60a5fa)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
+            <h1 style={{ margin: 0, fontSize: '1.5rem', fontWeight: 'bold', background: 'linear-gradient(135deg, #00ffc8, #ff1493)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
               Athini Mgagule
             </h1>
-            <p style={{ margin: 0, fontSize: '0.875rem', color: '#94a3b8' }}>Software Developer</p>
+            <p style={{ margin: 0, fontSize: '0.875rem', color: '#888' }}>Software Developer</p>
           </div>
-          <button 
-            onClick={handleDownloadCV}
+          <MagneticButton
+            href="https://drive.google.com/file/d/1iJ4zLlb196IW63VwQ9_FlB2zFcoOnIfH/view?usp=drive_link"
+            onClick={(e) => {
+              e.preventDefault();
+              handleDownloadCV();
+            }}
             style={{
-              background: 'linear-gradient(135deg, #8b5cf6, #3b82f6)',
+              background: 'linear-gradient(135deg, #00ffc8, #ff1493)',
               border: 'none',
               borderRadius: '8px',
-              color: 'white',
+              color: '#0f0f1e',
               cursor: 'pointer',
               padding: '0.5rem 1.5rem',
               display: 'flex',
               alignItems: 'center',
               gap: '0.5rem',
               fontSize: '0.875rem',
-              fontWeight: '600',
-              transition: 'all 0.3s ease'
+              fontWeight: '600'
             }}
-            onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-            onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
           >
             <Download size={16} />
             Download CV
-          </button>
+          </MagneticButton>
         </div>
       </div>
 
-      {/* Main content */}
-      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '6rem 2rem 3rem' }}>
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '6rem 2rem 3rem', position: 'relative', zIndex: 1 }}>
         
-        {/* Chapter 1: The Beginning */}
-        <section ref={el => sectionsRef.current[0] = el} style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', marginBottom: '6rem' }}>
-          <div style={{ textAlign: 'center', maxWidth: '800px', margin: '0 auto' }}>
+        {/* Hero Section with Particles */}
+        <section ref={el => sectionsRef.current[0] = el} style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', position: 'relative', marginBottom: '6rem' }}>
+          <ParticleField />
+          
+          <div style={{ textAlign: 'center', maxWidth: '900px', margin: '0 auto', position: 'relative', zIndex: 2 }}>
             <div style={{
-              width: '30%',
-              height: '30%',
+              width: '200px',
+              height: '200px',
               margin: '0 auto 2rem',
               borderRadius: '50%',
               overflow: 'hidden',
-              boxShadow: '0 0 60px rgba(139, 92, 246, 0.5)',
+              boxShadow: '0 0 60px rgba(0, 255, 200, 0.4)',
               animation: 'float 3s ease-in-out infinite',
-              border: '4px solid transparent',
-              backgroundImage: 'linear-gradient(#0a0e27, #0a0e27), linear-gradient(135deg, #8b5cf6, #3b82f6)',
-              backgroundOrigin: 'border-box',
-              backgroundClip: 'padding-box, border-box'
+              border: '4px solid #00ffc8',
+              background: '#1a1a2e'
             }}>
-              <img 
-                src="/prof.jpg" 
-                alt="Athini Mgagule"
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover',
-                  display: 'block'
-                }}
-              />
+              <div style={{ color: '#00ffc8', fontSize: '5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
+                AM
+              </div>
             </div>
             
             <h2 style={{ 
               fontSize: '3rem', 
               fontWeight: 'bold', 
               marginBottom: '2rem',
-              background: 'linear-gradient(135deg, #a78bfa, #60a5fa)',
+              background: 'linear-gradient(135deg, #00ffc8, #ff1493)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               lineHeight: '1.2'
             }}>
-              Hi, I'm Athini
+              <TypewriterText text="Hi, I'm Athini" speed={80} />
             </h2>
             
             <div style={{ 
-              color: '#cbd5e1', 
-              fontSize: '1.125rem', 
-              lineHeight: '2',
+              color: '#e0e0e0', 
+              fontSize: '1.25rem', 
+              lineHeight: '1.8',
               textAlign: 'left',
-              background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1))',
+              background: 'linear-gradient(135deg, rgba(0, 255, 200, 0.08), rgba(255, 20, 147, 0.08))',
               padding: '2rem',
               borderRadius: '16px',
-              border: '1px solid rgba(139, 92, 246, 0.3)',
+              border: '1px solid rgba(0, 255, 200, 0.2)',
               marginBottom: '2rem'
             }}>
               <p style={{ marginBottom: '1.5rem' }}>
-                My name is <strong style={{ color: '#a78bfa' }}>Athini Mgagule</strong>, and I am a <strong style={{ color: '#a78bfa' }}>Software Developer</strong>.
-              </p>
-              <p style={{ marginBottom: '1.5rem' }}>
-                This decision didn't come easy. For a while, I was torn between many paths. Data Analytics fascinated me—I'd read articles about data science and felt intrigued by how numbers could uncover hidden insights. At one point, I wanted to dive into <strong style={{ color: '#60a5fa' }}>Cybersecurity</strong>, because the idea of making and breaking the security of systems excited me. I even imagined myself becoming a <strong style={{ color: '#60a5fa' }}>Mathematician</strong>, because I've always had a passion for numbers.
+                I'm a developer who <strong style={{ color: '#00ffc8' }}>loves building things</strong>. From AI-powered testing tools to URL shorteners, I enjoy tackling real-world problems through code.
               </p>
               <p style={{ margin: 0 }}>
-                But recently, I realized it doesn't have to be either-or. Software development allows me to bring all those passions together. It blends mathematics, data analysis, cybersecurity, and even touches on cloud computing. It's not a narrow path—it's a canvas where I can combine my curiosity and skills to solve real problems.
+                With a <strong style={{ color: '#ff1493' }}>BSc in Computer Science and Mathematics</strong> from Wits, I combine theoretical foundations with practical coding. I'm eager to <strong style={{ color: '#00ffc8' }}>learn, grow, and contribute to meaningful projects.</strong>
               </p>
-            </div>  
+            </div>
+
+            {/* Quick Stats */}
+            <div style={{ 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
+              gap: '1rem',
+              marginBottom: '2rem'
+            }}>
+              {[
+                { icon: Code, label: 'Projects Built', value: '4+' },
+                { icon: Database, label: 'Technologies', value: '10+' },
+                { icon: Zap, label: 'GitHub Repos', value: '15+' },
+                { icon: Cpu, label: 'Learning & Growing', value: 'Daily' }
+              ].map((stat, i) => (
+                <TiltCard key={i} style={{
+                  background: 'linear-gradient(135deg, rgba(0, 255, 200, 0.1), rgba(255, 20, 147, 0.1))',
+                  padding: '1.5rem',
+                  borderRadius: '12px',
+                  border: '1px solid rgba(0, 255, 200, 0.2)',
+                  textAlign: 'center'
+                }}>
+                  <stat.icon size={32} color="#00ffc8" style={{ marginBottom: '0.5rem' }} />
+                  <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#00ffc8', marginBottom: '0.25rem' }}>
+                    {stat.value}
+                  </div>
+                  <div style={{ fontSize: '0.875rem', color: '#888' }}>{stat.label}</div>
+                </TiltCard>
+              ))}
+            </div>
+
+            {/* Terminal Code Block */}
+            <TerminalBlock code={`git clone https://github.com/AthiniMgagule\ncd portfolio\nnpm install && npm start\n// Building the future, one commit at a time...`} />
           </div>
         </section>
 
-        {/* Chapter 2: The Journey */}
+        {/* Journey Section with Vertical Timeline */}
         <section ref={el => sectionsRef.current[1] = el} style={{ marginBottom: '6rem' }}>
           <h2 style={{ 
             fontSize: '2.5rem', 
             fontWeight: 'bold', 
             marginBottom: '3rem',
             textAlign: 'center',
-            background: 'linear-gradient(135deg, #a78bfa, #60a5fa)',
+            background: 'linear-gradient(135deg, #00ffc8, #ff1493)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent'
           }}>
-            The Journey Through Learning
+            The Journey
           </h2>
 
-          <div style={{ maxWidth: '900px', margin: '0 auto 3rem' }}>
+          <div style={{ maxWidth: '1100px', margin: '0 auto', position: 'relative' }}>
+            {/* Center vertical line */}
+            <div style={{
+              position: 'absolute',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              top: 0,
+              bottom: 0,
+              width: '3px',
+              background: 'linear-gradient(180deg, #00ffc8, #ff1493, #ffa500)',
+              opacity: 0.4,
+              zIndex: 0
+            }} />
+
+            {[
+              {
+                title: 'Software Development & Data Analytics',
+                period: '03/2025 - Present',
+                org: 'Faith Mangope Technology and Leadership Institute',
+                details: 'Program focused on industry level certification. Delved into the heart of Microsoft Azure, Power BI, Java, and currently focused on AI fundamentals.',
+                color: '#00ffc8',
+                tags: ['Azure', 'Java', 'Power BI', 'AI'],
+                side: 'right'
+              },
+              {
+                title: 'Invigilator',
+                period: '02/2024 - 11/2024',
+                org: 'University of Witwatersrand',
+                details: 'Handed out test papers to students. Helped ensure academic integrity during test and exam sessions. Helped students with exam related queries.',
+                color: '#ffa500',
+                tags: ['Academic Integrity', 'Student Support'],
+                side: 'left'
+              },
+              {
+                title: 'BSc Computer Science and Mathematics',
+                period: '02/2022 - 11/2024',
+                org: 'University of Witwatersrand',
+                details: 'Rigorous dual-track program combining theoretical CS with advanced mathematics. Certificate of Merit in Positive Linear Systems III.',
+                color: '#ff1493',
+                tags: ['Algorithms', 'Databases', 'Real Analysis'],
+                side: 'right'
+              },
+              {
+                title: 'National Senior Certificate',
+                period: '01/2017 - 12/2021',
+                org: 'Leap Science and Maths School',
+                details: 'STEM-focused curriculum building problem-solving foundations in mathematics and sciences.',
+                color: '#ffa500',
+                tags: ['Mathematics', 'Sciences'],
+                side: 'left'
+              }
+            ].map((item, idx) => (
+              <div key={idx} style={{ 
+                position: 'relative', 
+                marginBottom: '4rem',
+                display: 'flex',
+                justifyContent: item.side === 'left' ? 'flex-start' : 'flex-end',
+                alignItems: 'center'
+              }} className="timeline-item">
+                {/* Timeline dot in center */}
+                <div style={{
+                  position: 'absolute',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  width: '20px',
+                  height: '20px',
+                  borderRadius: '50%',
+                  background: item.color,
+                  border: '4px solid #0f0f1e',
+                  boxShadow: `0 0 25px ${item.color}`,
+                  zIndex: 2,
+                  animation: 'pulse 2s infinite'
+                }} />
+
+                {/* Connecting line from dot to card */}
+                <div style={{
+                  position: 'absolute',
+                  left: item.side === 'left' ? 'calc(50% - 10px)' : '50%',
+                  width: '50px',
+                  height: '2px',
+                  background: `linear-gradient(${item.side === 'left' ? '270deg' : '90deg'}, ${item.color}, transparent)`,
+                  transform: `translateX(${item.side === 'left' ? '-100%' : '10px'})`,
+                  zIndex: 1
+                }} className="timeline-connector" />
+
+                {/* Content card */}
+                <TiltCard style={{
+                  background: `linear-gradient(135deg, ${item.color}15, rgba(15, 15, 30, 0.5))`,
+                  padding: '1.5rem',
+                  borderRadius: '12px',
+                  border: `1px solid ${item.color}40`,
+                  width: 'calc(50% - 80px)',
+                  position: 'relative',
+                  zIndex: 1,
+                  marginLeft: item.side === 'left' ? '0' : 'auto',
+                  marginRight: item.side === 'right' ? '0' : 'auto'
+                }} className="timeline-card">
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                    <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', margin: 0, color: item.color }}>{item.title}</h3>
+                    <span style={{ color: '#888', fontSize: '0.875rem', background: 'rgba(0,0,0,0.3)', padding: '0.25rem 0.75rem', borderRadius: '12px' }}>
+                      {item.period}
+                    </span>
+                  </div>
+                  <p style={{ color: '#e0e0e0', margin: '0.5rem 0', fontWeight: '600' }}>{item.org}</p>
+                  <p style={{ color: '#aaa', fontSize: '0.9rem', lineHeight: '1.6', margin: '1rem 0' }}>{item.details}</p>
+                  
+                  <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                    {item.tags.map((tag, i) => (
+                      <Badge key={i} variant="primary">{tag}</Badge>
+                    ))}
+                  </div>
+                </TiltCard>
+              </div>
+            ))}
+
+            {/* Mobile-friendly stacked version */}
+            <style>
+              {`
+                @media (max-width: 768px) {
+                  .timeline-item {
+                    justify-content: center !important;
+                  }
+                  .timeline-card {
+                    width: 90% !important;
+                    margin: 0 auto !important;
+                  }
+                  .timeline-connector {
+                    display: none !important;
+                  }
+                }
+              `}
+            </style>
+          </div>
+        </section>
+
+        {/* Skills Section with Interactive Graph */}
+        <section ref={el => sectionsRef.current[2] = el} style={{ marginBottom: '6rem' }}>
+          <h2 style={{ 
+            fontSize: '2.5rem', 
+            fontWeight: 'bold', 
+            marginBottom: '3rem',
+            textAlign: 'center',
+            background: 'linear-gradient(135deg, #00ffc8, #ff1493)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent'
+          }}>
+            Skills & Tech Stack
+          </h2>
+
+          <div style={{ maxWidth: '900px', margin: '0 auto' }}>
             <div style={{ 
-              color: '#cbd5e1', 
+              color: '#e0e0e0', 
               fontSize: '1.125rem', 
               lineHeight: '2',
-              background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1))',
+              background: 'linear-gradient(135deg, rgba(0, 255, 200, 0.08), rgba(255, 20, 147, 0.08))',
               padding: '2rem',
               borderRadius: '16px',
-              border: '1px solid rgba(139, 92, 246, 0.3)',
-              marginBottom: '3rem'
+              border: '1px solid rgba(0, 255, 200, 0.2)',
+              marginBottom: '3rem',
+              textAlign: 'center'
             }}>
-              <p>
-                My academic path took me through the halls of the <strong style={{ color: '#a78bfa' }}>University of Witwatersrand</strong>, where I earned my BSc in Computer Science and Mathematics. This wasn't just about collecting credits—it was about discovering how systems think, how algorithms breathe, and how mathematics forms the language of computation.
+              <p style={{ margin: 0 }}>
+                I'm constantly exploring new technologies and building projects to <strong style={{ color: '#00ffc8' }}>strengthen my skills</strong>. Hover over the skills below to see how they connect.
               </p>
             </div>
 
-            {/* Education timeline */}
-            <div style={{ position: 'relative', paddingLeft: '3rem' }}>
-              <div style={{
-                position: 'absolute',
-                left: '1rem',
-                top: 0,
-                bottom: 0,
-                width: '2px',
-                background: 'linear-gradient(180deg, #8b5cf6, #3b82f6)',
-                opacity: 0.5
-              }} />
+            <SkillGraph />
 
-              {/* Faith Mangope - Expandable */}
-              <div style={{ marginBottom: '2rem', position: 'relative' }}>
-                <div style={{
-                  position: 'absolute',
-                  left: '-2.25rem',
-                  top: '0.5rem',
-                  width: '16px',
-                  height: '16px',
-                  borderRadius: '50%',
-                  background: '#8b5cf6',
-                  border: '3px solid #0a0e27',
-                  boxShadow: '0 0 20px rgba(139, 92, 246, 0.6)'
-                }} />
-                <div
-                  style={{
-                    background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1))',
-                    padding: '1.5rem',
-                    borderRadius: '12px',
-                    border: '1px solid rgba(139, 92, 246, 0.3)',
-                    cursor: 'pointer',
-                    transition: 'all 0.3s ease',
-                    overflow: 'hidden'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = 'rgba(139, 92, 246, 0.6)';
-                    e.currentTarget.style.transform = 'scale(1.02)';
-                    const details = e.currentTarget.querySelector('.details');
-                    if (details) {
-                      details.style.maxHeight = '500px';
-                      details.style.opacity = '1';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = 'rgba(139, 92, 246, 0.3)';
-                    e.currentTarget.style.transform = 'scale(1)';
-                    const details = e.currentTarget.querySelector('.details');
-                    if (details) {
-                      details.style.maxHeight = '0';
-                      details.style.opacity = '0';
-                    }
-                  }}
-                >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                    <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', margin: 0, color: '#a78bfa' }}>Software Development & Data Analytics</h3>
-                    <span style={{ color: '#94a3b8', fontSize: '0.875rem' }}>03/2025 - Present</span>
+            <div style={{ marginTop: '3rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '1rem' }}>
+              {[
+                { title: 'Frontend', skills: ['React', 'JavaScript ES6+', 'HTML/CSS', 'Responsive Design'], icon: Code },
+                { title: 'Backend', skills: ['Node.js', 'Spring Boot', 'Python', 'REST APIs', 'Java'], icon: Database },
+                { title: 'Database', skills: ['MySQL', 'PostgreSQL', 'SQLite', 'SQL Optimization', 'IndexedDB'], icon: Database },
+                { title: 'Tools & AI', skills: ['Git', 'Azure', 'Power BI', 'NVIDIA AI', 'Netlify/Render'], icon: Cpu }
+              ].map((category, idx) => (
+                <TiltCard key={idx} style={{
+                  background: 'linear-gradient(135deg, rgba(0, 255, 200, 0.06), rgba(255, 20, 147, 0.06))',
+                  padding: '1.5rem',
+                  borderRadius: '12px',
+                  border: '1px solid rgba(0, 255, 200, 0.2)'
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '1rem' }}>
+                    <category.icon size={20} color="#00ffc8" />
+                    <h3 style={{ margin: 0, color: '#00ffc8', fontSize: '1.1rem' }}>{category.title}</h3>
                   </div>
-                  <p style={{ color: '#cbd5e1', margin: '0.5rem 0' }}>Faith Mangope Technology and Leadership Institute</p>
-                  <p style={{ color: '#94a3b8', fontSize: '0.875rem', margin: 0 }}>Azure Cloud Computing • Java OCA • Microsoft Power BI</p>
-                  
-                  <div className="details" style={{ 
-                    maxHeight: '0', 
-                    opacity: '0',
-                    overflow: 'hidden',
-                    transition: 'all 0.5s ease',
-                    marginTop: '1rem'
-                  }}>
-                    <div style={{ 
-                      borderTop: '1px solid rgba(139, 92, 246, 0.3)', 
-                      paddingTop: '1rem',
-                      color: '#cbd5e1',
-                      fontSize: '0.9rem',
-                      lineHeight: '1.8'
-                    }}>
-                      <p style={{ marginBottom: '1rem' }}>
-                        Currently enrolled in an intensive programme focused on enterprise-level software development and data analytics. This program combines hands-on projects with industry certifications to prepare for modern tech environments.
-                      </p>
-                      <p style={{ marginBottom: '1rem' }}>
-                        <strong style={{ color: '#a78bfa' }}>Key Areas:</strong> Working extensively with Azure cloud infrastructure, developing applications, and mastering data visualization with Power BI.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Wits University - Expandable */}
-              <div style={{ marginBottom: '2rem', position: 'relative' }}>
-                <div style={{
-                  position: 'absolute',
-                  left: '-2.25rem',
-                  top: '0.5rem',
-                  width: '16px',
-                  height: '16px',
-                  borderRadius: '50%',
-                  background: '#3b82f6',
-                  border: '3px solid #0a0e27',
-                  boxShadow: '0 0 20px rgba(59, 130, 246, 0.6)'
-                }} />
-                <div
-                  style={{
-                    background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1))',
-                    padding: '1.5rem',
-                    borderRadius: '12px',
-                    border: '1px solid rgba(139, 92, 246, 0.3)',
-                    cursor: 'pointer',
-                    transition: 'all 0.3s ease',
-                    overflow: 'hidden'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = 'rgba(59, 130, 246, 0.6)';
-                    e.currentTarget.style.transform = 'scale(1.02)';
-                    const details = e.currentTarget.querySelector('.details');
-                    if (details) {
-                      details.style.maxHeight = '500px';
-                      details.style.opacity = '1';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = 'rgba(139, 92, 246, 0.3)';
-                    e.currentTarget.style.transform = 'scale(1)';
-                    const details = e.currentTarget.querySelector('.details');
-                    if (details) {
-                      details.style.maxHeight = '0';
-                      details.style.opacity = '0';
-                    }
-                  }}
-                >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                    <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', margin: 0, color: '#60a5fa' }}>BSc Computer Science and Mathematics</h3>
-                    <span style={{ color: '#94a3b8', fontSize: '0.875rem' }}>02/2022 - 11/2024</span>
-                  </div>
-                  <p style={{ color: '#cbd5e1', margin: '0.5rem 0' }}>University of Witwatersrand</p>
-                  <div style={{
-                    background: 'rgba(234, 179, 8, 0.2)',
-                    color: '#fde047',
-                    padding: '0.375rem 1rem',
-                    borderRadius: '20px',
-                    fontSize: '0.875rem',
-                    border: '1px solid rgba(234, 179, 8, 0.3)',
-                    display: 'inline-block',
-                    marginTop: '0.5rem'
-                  }}>
-                    Certificate of Merit: Positive Linear Systems III
-                  </div>
-                  
-                  <div className="details" style={{ 
-                    maxHeight: '0', 
-                    opacity: '0',
-                    overflow: 'hidden',
-                    transition: 'all 0.5s ease',
-                    marginTop: '1rem'
-                  }}>
-                    <div style={{ 
-                      borderTop: '1px solid rgba(59, 130, 246, 0.3)', 
-                      paddingTop: '1rem',
-                      color: '#cbd5e1',
-                      fontSize: '0.9rem',
-                      lineHeight: '1.8'
-                    }}>
-                      <p style={{ marginBottom: '1rem' }}>
-                        A rigorous program combining theoretical computer science with advanced mathematics. This dual focus gave me a unique perspective on algorithm design, computational complexity, and the mathematical foundations of modern software systems.
-                      </p>
-                      <p style={{ marginBottom: '1rem' }}>
-                        <strong style={{ color: '#60a5fa' }}>Core Coursework:</strong> Software Design, Operating Systems, Coding and Cryptography, Advanced Analysis of Algorithms, Computer Networks, Mechanics, Abstract Mathematics, Database Fundamentals, Algebra Calculus, Data Structures and Algorithms
-                      </p>
-                      <p style={{ margin: 0 }}>
-                        <strong style={{ color: '#60a5fa' }}>Notable Achievement:</strong> Received a Certificate of Merit for exceptional performance in Positive Linear Systems III, demonstrating strong analytical and problem-solving abilities in advanced mathematical modeling.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* High School - Expandable */}
-              <div style={{ position: 'relative' }}>
-                <div style={{
-                  position: 'absolute',
-                  left: '-2.25rem',
-                  top: '0.5rem',
-                  width: '16px',
-                  height: '16px',
-                  borderRadius: '50%',
-                  background: '#6366f1',
-                  border: '3px solid #0a0e27'
-                }} />
-                <div
-                  style={{
-                    background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1))',
-                    padding: '1.5rem',
-                    borderRadius: '12px',
-                    border: '1px solid rgba(139, 92, 246, 0.3)',
-                    cursor: 'pointer',
-                    transition: 'all 0.3s ease',
-                    overflow: 'hidden'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.borderColor = 'rgba(99, 102, 241, 0.6)';
-                    e.currentTarget.style.transform = 'scale(1.02)';
-                    const details = e.currentTarget.querySelector('.details');
-                    if (details) {
-                      details.style.maxHeight = '500px';
-                      details.style.opacity = '1';
-                    }
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.borderColor = 'rgba(139, 92, 246, 0.3)';
-                    e.currentTarget.style.transform = 'scale(1)';
-                    const details = e.currentTarget.querySelector('.details');
-                    if (details) {
-                      details.style.maxHeight = '0';
-                      details.style.opacity = '0';
-                    }
-                  }}
-                >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', flexWrap: 'wrap', gap: '0.5rem', marginBottom: '0.5rem' }}>
-                    <h3 style={{ fontSize: '1.25rem', fontWeight: 'bold', margin: 0 }}>National Senior Certificate</h3>
-                    <span style={{ color: '#94a3b8', fontSize: '0.875rem' }}>01/2017 - 12/2021</span>
-                  </div>
-                  <p style={{ color: '#cbd5e1', margin: 0 }}>Leap Science and Maths School</p>
-                  
-                  <div className="details" style={{ 
-                    maxHeight: '0', 
-                    opacity: '0',
-                    overflow: 'hidden',
-                    transition: 'all 0.5s ease',
-                    marginTop: '1rem'
-                  }}>
-                    <div style={{ 
-                      borderTop: '1px solid rgba(99, 102, 241, 0.3)', 
-                      paddingTop: '1rem',
-                      color: '#cbd5e1',
-                      fontSize: '0.9rem',
-                      lineHeight: '1.8'
-                    }}>
-                      <p style={{ marginBottom: '1rem' }}>
-                        Attended a specialized STEM-focused high school that laid the foundation for my technical career. The rigorous curriculum emphasized mathematics and sciences, preparing students for careers in technology and engineering.
-                      </p>
-                      <p style={{ margin: 0 }}>
-                        <strong style={{ color: '#a78bfa' }}>Key Subjects:</strong> Mathematics, Physical Sciences, Life Sciences, and Accounting. This diverse foundation developed both analytical thinking and attention to detail that continues to serve me in software development.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
+                  <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+                    {category.skills.map((skill, i) => (
+                      <li key={i} style={{ 
+                        color: '#aaa', 
+                        marginBottom: '0.5rem',
+                        paddingLeft: '1rem',
+                        position: 'relative',
+                        fontSize: '0.9rem'
+                      }}>
+                        <span style={{ 
+                          position: 'absolute', 
+                          left: 0, 
+                          color: '#00ffc8' 
+                        }}>▸</span>
+                        {skill}
+                      </li>
+                    ))}
+                  </ul>
+                </TiltCard>
+              ))}
             </div>
           </div>
         </section>
 
-
-        {/* Chapter 4: The Work */}
+        {/* Projects Section */}
         <section ref={el => sectionsRef.current[3] = el} style={{ marginBottom: '6rem' }}>
           <h2 style={{ 
             fontSize: '2.5rem', 
             fontWeight: 'bold', 
             marginBottom: '3rem',
             textAlign: 'center',
-            background: 'linear-gradient(135deg, #a78bfa, #60a5fa)',
+            background: 'linear-gradient(135deg, #00ffc8, #ff1493)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent'
           }}>
-            Building Solutions
+            Featured Work
           </h2>
 
           <div style={{ maxWidth: '900px', margin: '0 auto' }}>
-            <div style={{ 
-              color: '#cbd5e1', 
-              fontSize: '1.125rem', 
-              lineHeight: '2',
-              background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1))',
-              padding: '2rem',
-              borderRadius: '16px',
-              border: '1px solid rgba(139, 92, 246, 0.3)',
-              marginBottom: '3rem'
-            }}>
-              <p>
-                Every project tells a story of a problem that needed solving. Here's how I've been turning ideas into reality:
-              </p>
-            </div>
-
             <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
-              <EnhancedProjectCard/>
-            </div>
+              {projects.map((project, idx) => (
+                <TiltCard key={idx} style={{
+                  background: 'linear-gradient(135deg, rgba(0, 255, 200, 0.04), rgba(255, 20, 147, 0.04))',
+                  borderRadius: '16px',
+                  padding: '2rem',
+                  border: '1px solid rgba(0, 255, 200, 0.15)',
+                  overflow: 'hidden'
+                }}>
+                  {/* Project Image */}
+                  <div style={{
+                    width: '100%',
+                    height: '200px',
+                    borderRadius: '12px',
+                    overflow: 'hidden',
+                    marginBottom: '1.5rem',
+                    border: '1px solid rgba(0, 255, 200, 0.2)',
+                    position: 'relative'
+                  }}>
+                    <img 
+                      src={project.image} 
+                      alt={project.title}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        transition: 'transform 0.3s ease'
+                      }}
+                      onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                      onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                    />
+                  </div>
 
-            <div style={{ marginTop: '3rem' }}>
-              <h3 style={{ fontSize: '1.75rem', fontWeight: 'bold', marginBottom: '2rem', color: '#60a5fa' }}>
-                My Toolkit
-              </h3>
-              <div style={{
-                background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1))',
-                padding: '2rem',
-                borderRadius: '16px',
-                border: '1px solid rgba(139, 92, 246, 0.3)'
-              }}>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.75rem' }}>
-                  {['Java', 'Python', 'JavaScript', 'React', 'Node.js', 'Spring Boot', 'MySQL', 'PostgreSQL', 'SQLite', 'Azure Cloud', 'Data Analytics', 'REST APIs', 'Agile/Scrum', 'Git', 'Problem Solving', 'Team Leadership'].map((skill, i) => (
-                    <span key={i} style={{
-                      background: 'rgba(139, 92, 246, 0.2)',
-                      color: '#c4b5fd',
-                      padding: '0.5rem 1.25rem',
-                      borderRadius: '25px',
-                      fontSize: '0.875rem',
-                      border: '1px solid rgba(139, 92, 246, 0.3)',
-                      transition: 'all 0.3s ease',
-                      cursor: 'default'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = 'rgba(139, 92, 246, 0.3)';
-                      e.currentTarget.style.transform = 'translateY(-2px)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'rgba(139, 92, 246, 0.2)';
-                      e.currentTarget.style.transform = 'translateY(0)';
-                    }}>
-                      {skill}
-                    </span>
-                  ))}
-                </div>
-              </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', flexWrap: 'wrap', gap: '1rem', marginBottom: '1rem' }}>
+                    <div>
+                      <h3 style={{ margin: 0, fontSize: '1.5rem', color: '#00ffc8' }}>{project.title}</h3>
+                      <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem', flexWrap: 'wrap' }}>
+                        <Badge variant="secondary">{project.period}</Badge>
+                        {project.badges.map((badge, i) => (
+                          <Badge key={i} variant="primary">{badge}</Badge>
+                        ))}
+                      </div>
+                    </div>
+                    
+                    {project.codeUrl && (
+                      <MagneticButton
+                        href={project.codeUrl}
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          gap: '0.5rem',
+                          padding: '0.5rem 1rem',
+                          borderRadius: '8px',
+                          border: '1px solid rgba(0, 255, 200, 0.3)',
+                          background: 'transparent',
+                          color: '#00ffc8',
+                          fontWeight: '600',
+                          fontSize: '0.875rem'
+                        }}
+                      >
+                        <Code size={16} />
+                        View Code
+                      </MagneticButton>
+                    )}
+                  </div>
+                  
+                  <p style={{ color: '#e0e0e0', lineHeight: '1.7', marginBottom: '1rem' }}>
+                    {project.description}
+                  </p>
+                  
+                  <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
+                    {project.metrics.map((metric, i) => (
+                      <span key={i} style={{
+                        background: 'rgba(255, 165, 0, 0.12)',
+                        color: '#ffa500',
+                        padding: '0.25rem 0.75rem',
+                        borderRadius: '12px',
+                        fontSize: '0.8rem',
+                        border: '1px solid rgba(255, 165, 0, 0.2)',
+                        fontWeight: '600'
+                      }}>
+                        {metric}
+                      </span>
+                    ))}
+                  </div>
+                  
+                  <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                    {project.tech.map((t, i) => (
+                      <span key={i} style={{
+                        background: 'rgba(0, 255, 200, 0.12)',
+                        color: '#00ffc8',
+                        padding: '0.25rem 0.75rem',
+                        borderRadius: '12px',
+                        fontSize: '0.75rem',
+                        border: '1px solid rgba(0, 255, 200, 0.2)'
+                      }}>
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                  
+                  {project.title === 'URL Shortener' && <LiveURLShortener />}
+                </TiltCard>
+              ))}
             </div>
           </div>
         </section>
 
-        {/* Chapter 5: What's Next */}
+        {/* Contact Section */}
         <section ref={el => sectionsRef.current[4] = el} style={{ minHeight: '80vh', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
           <div style={{ maxWidth: '800px', margin: '0 auto', textAlign: 'center' }}>
             <h2 style={{ 
               fontSize: '3rem', 
               fontWeight: 'bold', 
               marginBottom: '2rem',
-              background: 'linear-gradient(135deg, #a78bfa, #60a5fa)',
+              background: 'linear-gradient(135deg, #00ffc8, #ff1493)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent'
             }}>
-              What's Next?
+              Let's Build Something
             </h2>
             
             <div style={{ 
-              color: '#cbd5e1', 
+              color: '#e0e0e0', 
               fontSize: '1.25rem', 
               lineHeight: '2',
-              background: 'linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1))',
+              background: 'linear-gradient(135deg, rgba(0, 255, 200, 0.08), rgba(255, 20, 147, 0.08))',
               padding: '2.5rem',
               borderRadius: '16px',
-              border: '1px solid rgba(139, 92, 246, 0.3)',
+              border: '1px solid rgba(0, 255, 200, 0.2)',
               marginBottom: '3rem'
             }}>
               <p style={{ marginBottom: '1.5rem' }}>
-                I'm actively seeking opportunities to join teams that value <strong style={{ color: '#a78bfa' }}>innovation</strong>, <strong style={{ color: '#60a5fa' }}>collaboration</strong>, and <strong style={{ color: '#a78bfa' }}>continuous learning</strong>.
+                I'm actively seeking opportunities where I can apply what I've learned, collaborate with experienced teams, and continue growing as a developer.
               </p>
               <p style={{ margin: 0 }}>
-                Whether it's building scalable web applications, diving into data-driven solutions, or exploring the intersection of AI and software development—I'm ready to contribute, learn, and grow.
+                Whether it's contributing to backend systems, building user interfaces, or working with data—<strong style={{ color: '#00ffc8' }}>I'm ready to learn and add value.</strong>
               </p>
             </div>
 
@@ -602,98 +1195,83 @@ const StoryPortfolio = () => {
               display: 'flex', 
               justifyContent: 'center', 
               gap: '1.5rem',
-              flexWrap: 'wrap'
+              flexWrap: 'wrap',
+              marginBottom: '2rem'
             }}>
-              <a
+              <MagneticButton
                 href="mailto:athi200308@gmail.com"
                 style={{
-                  background: 'linear-gradient(135deg, #8b5cf6, #3b82f6)',
+                  background: 'linear-gradient(135deg, #00ffc8, #ff1493)',
                   border: 'none',
                   borderRadius: '12px',
-                  color: 'white',
+                  color: '#0f0f1e',
                   padding: '1rem 2rem',
                   fontSize: '1.125rem',
                   fontWeight: '600',
-                  textDecoration: 'none',
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '0.75rem',
-                  transition: 'all 0.3s ease',
-                  boxShadow: '0 10px 30px rgba(139, 92, 246, 0.3)'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.transform = 'translateY(-5px)';
-                  e.currentTarget.style.boxShadow = '0 15px 40px rgba(139, 92, 246, 0.5)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.boxShadow = '0 10px 30px rgba(139, 92, 246, 0.3)';
+                  boxShadow: '0 10px 30px rgba(0, 255, 200, 0.3)'
                 }}
               >
                 <Mail size={20} />
                 Get in Touch
-              </a>
+              </MagneticButton>
 
-              <button
+              <MagneticButton
                 onClick={handleDownloadCV}
                 style={{
                   background: 'transparent',
-                  border: '2px solid #8b5cf6',
+                  border: '2px solid #00ffc8',
                   borderRadius: '12px',
-                  color: '#a78bfa',
+                  color: '#00ffc8',
                   padding: '1rem 2rem',
                   fontSize: '1.125rem',
                   fontWeight: '600',
                   cursor: 'pointer',
                   display: 'inline-flex',
                   alignItems: 'center',
-                  gap: '0.75rem',
-                  transition: 'all 0.3s ease'
-                }}
-                onMouseEnter={(e) => {
-                  e.currentTarget.style.background = 'rgba(139, 92, 246, 0.1)';
-                  e.currentTarget.style.transform = 'translateY(-5px)';
-                }}
-                onMouseLeave={(e) => {
-                  e.currentTarget.style.background = 'transparent';
-                  e.currentTarget.style.transform = 'translateY(0)';
+                  gap: '0.75rem'
                 }}
               >
                 <Download size={20} />
                 Download Resume
-              </button>
+              </MagneticButton>
             </div>
-            <p></p>
 
-            {/* Social links */}
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem' }}>
-              <a href="https://linkedin.com/in/athini-mgagule-8b8b362b2" target="_blank" rel="noopener noreferrer"
-                style={{ width: '48px', height: '48px', background: '#2563eb', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.3s ease' }}
-                onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 10px 25px rgba(37, 99, 235, 0.5)'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}>
-                <Linkedin size={20} color="white" />
-              </a>
-              <a href="https://github.com/AthiniMgagule" target="_blank" rel="noopener noreferrer"
-                style={{ width: '48px', height: '48px', background: '#374151', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.3s ease' }}
-                onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 10px 25px rgba(55, 65, 81, 0.5)'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}>
-                <Github size={20} color="white" />
-              </a>
-              <a href="https://athinimgagule.netlify.app" target="_blank" rel="noopener noreferrer"
-                style={{ width: '48px', height: '48px', background: '#0891b2', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.3s ease' }}
-                onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-5px)'; e.currentTarget.style.boxShadow = '0 10px 25px rgba(8, 145, 178, 0.5)'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = 'none'; }}>
-                <Globe size={20} color="white" />
-              </a>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '1rem', marginBottom: '2rem' }}>
+              {[
+                { icon: Linkedin, url: 'https://linkedin.com/in/athini-mgagule-8b8b362b2', color: '#00ffc8' },
+                { icon: Github, url: 'https://github.com/AthiniMgagule', color: '#ff1493' },
+                { icon: Globe, url: 'https://athinimgagule.netlify.app', color: '#ffa500' }
+              ].map((social, i) => (
+                <MagneticButton
+                  key={i}
+                  href={social.url}
+                  style={{
+                    width: '48px',
+                    height: '48px',
+                    background: social.color,
+                    borderRadius: '50%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    border: 'none',
+                    cursor: 'pointer'
+                  }}
+                >
+                  <social.icon size={20} color="#0f0f1e" />
+                </MagneticButton>
+              ))}
             </div>
 
             <p style={{ 
               marginTop: '3rem', 
-              color: '#64748b', 
+              color: '#666', 
               fontSize: '0.875rem',
               fontStyle: 'italic'
             }}>
-              "The best way to predict the future is to create it."
+              "Simplicity is the ultimate sophistication." — Leonardo da Vinci
             </p>
           </div>
         </section>
@@ -705,14 +1283,19 @@ const StoryPortfolio = () => {
             0%, 100% { transform: translateY(0px); }
             50% { transform: translateY(-20px); }
           }
-          
+
+          @keyframes pulse {
+            0%, 100% { box-shadow: 0 0 25px currentColor; }
+            50% { box-shadow: 0 0 40px currentColor; }
+          }
+
           * {
             box-sizing: border-box;
           }
           
           body {
             margin: 0;
-            background: #0a0e27;
+            background: #0f0f1e;
           }
           
           html {
@@ -724,16 +1307,20 @@ const StoryPortfolio = () => {
           }
 
           ::-webkit-scrollbar-track {
-            background: #1a1142;
+            background: #1a1a2e;
           }
 
           ::-webkit-scrollbar-thumb {
-            background: linear-gradient(180deg, #8b5cf6, #3b82f6);
+            background: linear-gradient(180deg, #00ffc8, #ff1493);
             border-radius: 5px;
           }
-
-          ::-webkit-scrollbar-thumb:hover {
-            background: linear-gradient(180deg, #a78bfa, #60a5fa);
+          
+          .timeline-item, .timeline-card {
+            will-change: transform;
+          }
+          
+          canvas {
+            will-change: contents;
           }
         `}
       </style>
@@ -741,4 +1328,4 @@ const StoryPortfolio = () => {
   );
 };
 
-export default StoryPortfolio;
+export default Portfolio;
