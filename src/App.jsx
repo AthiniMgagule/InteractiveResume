@@ -269,7 +269,8 @@ const SkillGraph = () => {
         ref={canvasRef}
         onMouseMove={handleCanvasHover}
         onMouseLeave={() => setHoveredSkill(null)}
-        style={{ cursor: 'pointer', maxWidth: '100%' }}
+        style={{ cursor: 'pointer', maxWidth: '100%', height: 'auto' }}
+        className="skill-canvas"
       />
     </div>
   );
@@ -525,7 +526,7 @@ const Portfolio = () => {
       metrics: ['Multi-Model AI', 'Active Development'],
       codeUrl: 'https://github.com/Picca1e-12/GentestAI',
       tech: ['React', 'Node.js', 'Python', 'StarCoder2', 'Mistral', 'REST API'],
-      image: 'https://via.placeholder.com/800x400/1a1a2e/00ffc8?text=GentestAI+Dashboard'
+      image: '/images/GenTestAIDesktop.png'
     },
     {
       title: 'URL Shortener',
@@ -535,7 +536,7 @@ const Portfolio = () => {
       metrics: ['Full-Stack Project', 'REST API'],
       codeUrl: 'https://github.com/AthiniMgagule/URLShortener',
       tech: ['React', 'Spring Boot', 'MySQL', 'REST API'],
-      image: 'https://via.placeholder.com/800x400/1a1a2e/ff1493?text=URL+Shortener'
+      image: '/images/UrlShortenerDesktop.png'
     },
     {
       title: 'WriteWisp',
@@ -545,7 +546,7 @@ const Portfolio = () => {
       metrics: ['AI Integration', 'In Progress'],
       codeUrl: 'https://github.com/AthiniMgagule/WriteWisp',
       tech: ['React', 'Node.js', 'MySQL', 'NVIDIA AI', 'Llama'],
-      image: 'https://via.placeholder.com/800x400/1a1a2e/00ffc8?text=WriteWisp+Editor'
+      image: '/images/WriteWispDesktop.png'
     },
     {
       title: 'ApplyConnect',
@@ -554,7 +555,7 @@ const Portfolio = () => {
       description: 'Creating an offline-first bursary aggregator for students with limited internet access. Implementing PWA features and exploring web scraping. Building with South African students in mind.',
       metrics: ['PWA Features', 'Social Impact'],
       tech: ['React', 'Node.js', 'IndexedDB', 'Puppeteer'],
-      image: 'https://via.placeholder.com/800x400/1a1a2e/ffa500?text=ApplyConnect'
+      image: '/images/ApplyConnectDesktop.png'
     }
   ];
 
@@ -742,9 +743,10 @@ const Portfolio = () => {
               animation: 'float 3s ease-in-out infinite',
               border: '4px solid #00ffc8',
               background: '#1a1a2e'
-            }}>
+            }}
+            className="hero-image">
               <div style={{ color: '#00ffc8', fontSize: '5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%' }}>
-                AM
+                <img src="/images/AthiniMgagulePP.jpg" style={{ width: '100%', height: '100%', objectFit: 'cover' }} alt="Athini Mgagule" />
               </div>
             </div>
             
@@ -756,7 +758,8 @@ const Portfolio = () => {
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
               lineHeight: '1.2'
-            }}>
+            }}
+            className="hero-title">
               <TypewriterText text="Hi, I'm Athini" speed={80} />
             </h2>
             
@@ -770,7 +773,8 @@ const Portfolio = () => {
               borderRadius: '16px',
               border: '1px solid rgba(0, 255, 200, 0.2)',
               marginBottom: '2rem'
-            }}>
+            }}
+            className="hero-text">
               <p style={{ marginBottom: '1.5rem' }}>
                 I'm a developer who <strong style={{ color: '#00ffc8' }}>loves building things</strong>. From AI-powered testing tools to URL shorteners, I enjoy tackling real-world problems through code.
               </p>
@@ -798,9 +802,11 @@ const Portfolio = () => {
                   borderRadius: '12px',
                   border: '1px solid rgba(0, 255, 200, 0.2)',
                   textAlign: 'center'
-                }}>
+                }}
+                className="stat-card">
                   <stat.icon size={32} color="#00ffc8" style={{ marginBottom: '0.5rem' }} />
-                  <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#00ffc8', marginBottom: '0.25rem' }}>
+                  <div style={{ fontSize: '1.5rem', fontWeight: 'bold', color: '#00ffc8', marginBottom: '0.25rem' }}
+                  className="stat-value">
                     {stat.value}
                   </div>
                   <div style={{ fontSize: '0.875rem', color: '#888' }}>{stat.label}</div>
@@ -823,7 +829,8 @@ const Portfolio = () => {
             background: 'linear-gradient(135deg, #00ffc8, #ff1493)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent'
-          }}>
+          }}
+          className="section-title">
             The Journey
           </h2>
 
@@ -957,6 +964,12 @@ const Portfolio = () => {
                     display: none !important;
                   }
                 }
+                
+                @media (max-width: 480px) {
+                  .timeline-card {
+                    width: 95% !important;
+                  }
+                }
               `}
             </style>
           </div>
@@ -972,7 +985,8 @@ const Portfolio = () => {
             background: 'linear-gradient(135deg, #00ffc8, #ff1493)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent'
-          }}>
+          }}
+          className="section-title">
             Skills & Tech Stack
           </h2>
 
@@ -1046,7 +1060,8 @@ const Portfolio = () => {
             background: 'linear-gradient(135deg, #00ffc8, #ff1493)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent'
-          }}>
+          }}
+          className="section-title">
             Featured Work
           </h2>
 
@@ -1063,13 +1078,14 @@ const Portfolio = () => {
                   {/* Project Image */}
                   <div style={{
                     width: '100%',
-                    height: '200px',
+                    height: 'auto',
                     borderRadius: '12px',
                     overflow: 'hidden',
                     marginBottom: '1.5rem',
                     border: '1px solid rgba(0, 255, 200, 0.2)',
                     position: 'relative'
-                  }}>
+                  }}
+                  className="project-image">
                     <img 
                       src={project.image} 
                       alt={project.title}
@@ -1086,7 +1102,7 @@ const Portfolio = () => {
 
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', flexWrap: 'wrap', gap: '1rem', marginBottom: '1rem' }}>
                     <div>
-                      <h3 style={{ margin: 0, fontSize: '1.5rem', color: '#00ffc8' }}>{project.title}</h3>
+                      <h3 style={{ margin: 0, fontSize: '1.5rem', color: '#00ffc8' }} className="project-title">{project.title}</h3>
                       <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem', flexWrap: 'wrap' }}>
                         <Badge variant="secondary">{project.period}</Badge>
                         {project.badges.map((badge, i) => (
@@ -1169,7 +1185,8 @@ const Portfolio = () => {
               background: 'linear-gradient(135deg, #00ffc8, #ff1493)',
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent'
-            }}>
+            }}
+            className="contact-title">
               Let's Build Something
             </h2>
             
@@ -1182,7 +1199,8 @@ const Portfolio = () => {
               borderRadius: '16px',
               border: '1px solid rgba(0, 255, 200, 0.2)',
               marginBottom: '3rem'
-            }}>
+            }}
+            className="contact-text">
               <p style={{ marginBottom: '1.5rem' }}>
                 I'm actively seeking opportunities where I can apply what I've learned, collaborate with experienced teams, and continue growing as a developer.
               </p>
@@ -1321,6 +1339,81 @@ const Portfolio = () => {
           
           canvas {
             will-change: contents;
+          }
+
+          /* Responsive Typography */
+          @media (max-width: 1024px) {
+            .hero-title {
+              font-size: 2.5rem !important;
+            }
+            .section-title {
+              font-size: 2rem !important;
+            }
+            .hero-text {
+              font-size: 1.1rem !important;
+            }
+          }
+
+          @media (max-width: 768px) {
+            .hero-title {
+              font-size: 2rem !important;
+            }
+            .section-title {
+              font-size: 1.75rem !important;
+            }
+            .hero-text {
+              font-size: 1rem !important;
+            }
+            .project-title {
+              font-size: 1.25rem !important;
+            }
+            .project-image {
+              height: 160px !important;
+            }
+            .hero-image {
+              width: 150px !important;
+              height: 150px !important;
+            }
+            .skill-canvas {
+              max-width: 100% !important;
+              height: auto !important;
+            }
+          }
+
+          @media (max-width: 480px) {
+            .hero-title {
+              font-size: 1.75rem !important;
+            }
+            .section-title {
+              font-size: 1.5rem !important;
+            }
+            .hero-text {
+              font-size: 0.95rem !important;
+              padding: 1.5rem !important;
+            }
+            .project-title {
+              font-size: 1.1rem !important;
+            }
+            .project-image {
+              height: 140px !important;
+            }
+            .hero-image {
+              width: 120px !important;
+              height: 120px !important;
+            }
+            .stat-card {
+              padding: 1rem !important;
+            }
+            .stat-value {
+              font-size: 1.25rem !important;
+            }
+            .contact-title {
+              font-size: 2rem !important;
+            }
+            .contact-text {
+              font-size: 1rem !important;
+              padding: 1.5rem !important;
+            }
           }
         `}
       </style>
