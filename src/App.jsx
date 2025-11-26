@@ -1,463 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Mail, Phone, MapPin, Github, Linkedin, Globe, Award, Code, Download, Lightbulb, Star, Target, Rocket, BookOpen, Menu, X, ExternalLink, AlertCircle, Terminal, Zap, Database, Cpu } from 'lucide-react';
 
-const Badge = ({ children, variant = 'primary' }) => {
-  const variants = {
-    primary: { bg: 'rgba(0, 255, 200, 0.15)', color: '#00ffc8', border: 'rgba(0, 255, 200, 0.3)' },
-    secondary: { bg: 'rgba(255, 20, 147, 0.15)', color: '#ff1493', border: 'rgba(255, 20, 147, 0.3)' },
-    accent: { bg: 'rgba(255, 165, 0, 0.15)', color: '#ffa500', border: 'rgba(255, 165, 0, 0.3)' }
-  };
-  
-  const v = variants[variant];
-  return (
-    <span style={{
-      background: v.bg,
-      color: v.color,
-      padding: '0.35rem 0.8rem',
-      borderRadius: 18,
-      fontSize: '0.875rem',
-      border: `1px solid ${v.border}`,
-      display: 'inline-block'
-    }}>{children}</span>
-  );
-};
-
-// Particle System for Hero (Optimized)
-const ParticleField = () => {
-  const canvasRef = useRef(null);
-  
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    
-    const ctx = canvas.getContext('2d');
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    
-    const particles = [];
-    const particleCount = 40;
-    
-    class Particle {
-      constructor() {
-        this.x = Math.random() * canvas.width;
-        this.y = Math.random() * canvas.height;
-        this.vx = (Math.random() - 0.5) * 0.5;
-        this.vy = (Math.random() - 0.5) * 0.5;
-        this.radius = Math.random() * 2 + 1;
-        this.color = Math.random() > 0.5 ? '#00ffc8' : '#ff1493';
-      }
-      
-      update() {
-        this.x += this.vx;
-        this.y += this.vy;
-        
-        if (this.x < 0 || this.x > canvas.width) this.vx *= -1;
-        if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
-      }
-      
-      draw() {
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-        ctx.fillStyle = this.color;
-        ctx.fill();
-      }
-    }
-    
-    for (let i = 0; i < particleCount; i++) {
-      particles.push(new Particle());
-    }
-    
-    const animate = () => {
-      ctx.fillStyle = 'rgba(15, 15, 30, 0.1)';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-      
-      particles.forEach(particle => {
-        particle.update();
-        particle.draw();
-      });
-      
-      for (let i = 0; i < particles.length; i++) {
-        for (let j = i + 1; j < Math.min(i + 5, particles.length); j++) {
-          const dx = particles[i].x - particles[j].x;
-          const dy = particles[i].y - particles[j].y;
-          const distance = Math.sqrt(dx * dx + dy * dy);
-          
-          if (distance < 100) {
-            ctx.beginPath();
-            ctx.strokeStyle = `rgba(0, 255, 200, ${1 - distance / 120})`;
-            ctx.lineWidth = 0.5;
-            ctx.moveTo(particles[i].x, particles[i].y);
-            ctx.lineTo(particles[j].x, particles[j].y);
-            ctx.stroke();
-          }
-        }
-      }
-      
-      requestAnimationFrame(animate);
-    };
-    
-    animate();
-    
-    const handleResize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-    
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-  
-  return <canvas ref={canvasRef} style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', opacity: 0.3 }} />;
-};
-
-// Typewriter Effect
-const TypewriterText = ({ text, speed = 50 }) => {
-  const [displayText, setDisplayText] = useState('');
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [showCursor, setShowCursor] = useState(true);
-  
-  useEffect(() => {
-    if (currentIndex < text.length) {
-      const timeout = setTimeout(() => {
-        setDisplayText(prev => prev + text[currentIndex]);
-        setCurrentIndex(prev => prev + 1);
-      }, speed);
-      return () => clearTimeout(timeout);
-    }
-  }, [currentIndex, text, speed]);
-  
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setShowCursor(prev => !prev);
-    }, 500);
-    return () => clearInterval(interval);
-  }, []);
-  
-  return (
-    <span>
-      {displayText}
-      <span style={{ opacity: showCursor ? 1 : 0, color: '#00ffc8' }}>|</span>
-    </span>
-  );
-};
-
-// 3D Tilting Project Card (Optimized with throttling)
-const TiltCard = ({ children, style }) => {
-  const [tilt, setTilt] = useState({ x: 0, y: 0 });
-  const [isHovering, setIsHovering] = useState(false);
-  const throttleTimer = useRef(null);
-  
-  const handleMouseMove = (e) => {
-    if (throttleTimer.current) return;
-    
-    throttleTimer.current = setTimeout(() => {
-      throttleTimer.current = null;
-    }, 16);
-    
-    const rect = e.currentTarget.getBoundingClientRect();
-    const x = (e.clientX - rect.left) / rect.width - 0.5;
-    const y = (e.clientY - rect.top) / rect.height - 0.5;
-    setTilt({ x: y * 10, y: -x * 10 });
-  };
-  
-  const handleMouseLeave = () => {
-    setTilt({ x: 0, y: 0 });
-    setIsHovering(false);
-  };
-  
-  return (
-    <div
-      onMouseMove={handleMouseMove}
-      onMouseEnter={() => setIsHovering(true)}
-      onMouseLeave={handleMouseLeave}
-      style={{
-        ...style,
-        transform: `perspective(1000px) rotateX(${tilt.x}deg) rotateY(${tilt.y}deg) scale(${isHovering ? 1.02 : 1})`,
-        transition: 'transform 0.1s ease-out',
-        transformStyle: 'preserve-3d'
-      }}
-    >
-      {children}
-    </div>
-  );
-};
-
-// Interactive Skill Graph
-const SkillGraph = () => {
-  const canvasRef = useRef(null);
-  const [hoveredSkill, setHoveredSkill] = useState(null);
-  
-  const skills = [
-    { name: 'React', x: 150, y: 150, color: '#00ffc8', connects: ['Node.js', 'JavaScript', 'HTML/CSS'] },
-    { name: 'Node.js', x: 350, y: 150, color: '#ff1493', connects: ['React', 'MySQL', 'REST API', 'Python'] },
-    { name: 'Java', x: 250, y: 50, color: '#ffa500', connects: ['Spring Boot', 'MySQL'] },
-    { name: 'Spring Boot', x: 450, y: 50, color: '#00ffc8', connects: ['Java', 'REST API'] },
-    { name: 'MySQL', x: 350, y: 250, color: '#ff1493', connects: ['Node.js', 'Java', 'SQL', 'Python'] },
-    { name: 'JavaScript', x: 50, y: 250, color: '#ffa500', connects: ['React', 'HTML/CSS'] },
-    { name: 'HTML/CSS', x: 50, y: 350, color: '#00ffc8', connects: ['JavaScript', 'React'] },
-    { name: 'REST API', x: 450, y: 250, color: '#ff1493', connects: ['Node.js', 'Spring Boot', 'Python'] },
-    { name: 'SQL', x: 250, y: 350, color: '#ffa500', connects: ['MySQL'] },
-    { name: 'Python', x: 150, y: 50, color: '#ff1493', connects: ['Node.js', 'REST API', 'MySQL'] }
-  ];
-  
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    
-    const ctx = canvas.getContext('2d');
-    canvas.width = 500;
-    canvas.height = 400;
-    
-    const drawGraph = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
-      
-      skills.forEach(skill => {
-        skill.connects.forEach(connectionName => {
-          const target = skills.find(s => s.name === connectionName);
-          if (target) {
-            ctx.beginPath();
-            ctx.moveTo(skill.x, skill.y);
-            ctx.lineTo(target.x, target.y);
-            ctx.strokeStyle = hoveredSkill === skill.name || hoveredSkill === connectionName
-              ? 'rgba(0, 255, 200, 0.6)'
-              : 'rgba(255, 255, 255, 0.1)';
-            ctx.lineWidth = hoveredSkill === skill.name || hoveredSkill === connectionName ? 2 : 1;
-            ctx.stroke();
-          }
-        });
-      });
-      
-      skills.forEach(skill => {
-        ctx.beginPath();
-        ctx.arc(skill.x, skill.y, hoveredSkill === skill.name ? 30 : 20, 0, Math.PI * 2);
-        ctx.fillStyle = skill.color;
-        ctx.globalAlpha = hoveredSkill === skill.name ? 1 : 0.6;
-        ctx.fill();
-        ctx.globalAlpha = 1;
-        
-        ctx.fillStyle = '#0f0f1e';
-        ctx.font = 'bold 11px system-ui';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(skill.name, skill.x, skill.y);
-      });
-    };
-    
-    drawGraph();
-  }, [hoveredSkill]);
-  
-  const handleCanvasHover = (e) => {
-    const canvas = canvasRef.current;
-    const rect = canvas.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    
-    let foundSkill = null;
-    skills.forEach(skill => {
-      const distance = Math.sqrt((x - skill.x) ** 2 + (y - skill.y) ** 2);
-      if (distance < 20) {
-        foundSkill = skill.name;
-      }
-    });
-    
-    setHoveredSkill(foundSkill);
-  };
-  
-  return (
-    <div style={{ display: 'flex', justifyContent: 'center', marginTop: '2rem' }}>
-      <canvas
-        ref={canvasRef}
-        onMouseMove={handleCanvasHover}
-        onMouseLeave={() => setHoveredSkill(null)}
-        style={{ cursor: 'pointer', maxWidth: '100%', height: 'auto' }}
-        className="skill-canvas"
-      />
-    </div>
-  );
-};
-
-// Live URL Shortener Demo
-const LiveURLShortener = () => {
-  const [url, setUrl] = useState('');
-  const [shortened, setShortened] = useState('');
-  const [loading, setLoading] = useState(false);
-  
-  const generateShortCode = (url) => {
-    const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    let result = '';
-    for (let i = 0; i < 6; i++) {
-      result += chars.charAt(Math.floor(Math.random() * chars.length));
-    }
-    return result;
-  };
-  
-  const handleShorten = () => {
-    if (!url) return;
-    setLoading(true);
-    setTimeout(() => {
-      setShortened(`short.ly/${generateShortCode(url)}`);
-      setLoading(false);
-    }, 800);
-  };
-  
-  return (
-    <div style={{
-      background: 'linear-gradient(135deg, rgba(0, 255, 200, 0.08), rgba(255, 20, 147, 0.08))',
-      padding: '2rem',
-      borderRadius: '16px',
-      border: '1px solid rgba(0, 255, 200, 0.2)',
-      marginTop: '1rem'
-    }}>
-      <h4 style={{ color: '#00ffc8', marginBottom: '1rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-        <Zap size={20} />
-        Try It Live
-      </h4>
-      <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-        <input
-          type="text"
-          value={url}
-          onChange={(e) => setUrl(e.target.value)}
-          placeholder="Enter a long URL..."
-          style={{
-            flex: 1,
-            minWidth: '200px',
-            padding: '0.75rem',
-            background: 'rgba(0, 0, 0, 0.3)',
-            border: '1px solid rgba(0, 255, 200, 0.3)',
-            borderRadius: '8px',
-            color: '#e0e0e0',
-            fontSize: '0.9rem'
-          }}
-        />
-        <button
-          onClick={handleShorten}
-          disabled={loading}
-          style={{
-            padding: '0.75rem 1.5rem',
-            background: 'linear-gradient(135deg, #00ffc8, #ff1493)',
-            border: 'none',
-            borderRadius: '8px',
-            color: '#0f0f1e',
-            fontWeight: 'bold',
-            cursor: loading ? 'wait' : 'pointer',
-            opacity: loading ? 0.6 : 1
-          }}
-        >
-          {loading ? 'Shortening...' : 'Shorten'}
-        </button>
-      </div>
-      {shortened && (
-        <div style={{
-          marginTop: '1rem',
-          padding: '1rem',
-          background: 'rgba(0, 255, 200, 0.1)',
-          border: '1px solid rgba(0, 255, 200, 0.3)',
-          borderRadius: '8px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '0.5rem'
-        }}>
-          <code style={{ color: '#00ffc8', flex: 1 }}>{shortened}</code>
-          <button
-            onClick={() => navigator.clipboard.writeText(shortened)}
-            style={{
-              padding: '0.5rem',
-              background: 'transparent',
-              border: '1px solid rgba(0, 255, 200, 0.3)',
-              borderRadius: '6px',
-              color: '#00ffc8',
-              cursor: 'pointer'
-            }}
-          >
-            Copy
-          </button>
-        </div>
-      )}
-    </div>
-  );
-};
-
-// Terminal-style Code Block
-const TerminalBlock = ({ code }) => {
-  const [displayedLines, setDisplayedLines] = useState([]);
-  const lines = code.split('\n');
-  
-  useEffect(() => {
-    lines.forEach((line, index) => {
-      setTimeout(() => {
-        setDisplayedLines(prev => [...prev, line]);
-      }, index * 100);
-    });
-  }, []);
-  
-  return (
-    <div style={{
-      background: '#1a1a2e',
-      borderRadius: '8px',
-      padding: '1rem',
-      fontFamily: 'Monaco, Courier, monospace',
-      fontSize: '0.85rem',
-      overflow: 'auto',
-      border: '1px solid rgba(0, 255, 200, 0.2)'
-    }}>
-      <div style={{ display: 'flex', gap: '0.5rem', marginBottom: '0.5rem' }}>
-        <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#ff5f56' }}></div>
-        <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#ffbd2e' }}></div>
-        <div style={{ width: '12px', height: '12px', borderRadius: '50%', background: '#27c93f' }}></div>
-      </div>
-      {displayedLines.map((line, i) => (
-        <div key={i} style={{ color: '#00ffc8', marginBottom: '0.25rem' }}>
-          <span style={{ color: '#888' }}>$ </span>{line}
-        </div>
-      ))}
-    </div>
-  );
-};
-
-// Magnetic Button (Optimized with throttling)
-const MagneticButton = ({ children, href, onClick, style }) => {
-  const [position, setPosition] = useState({ x: 0, y: 0 });
-  const buttonRef = useRef(null);
-  const throttleTimer = useRef(null);
-  
-  const handleMouseMove = (e) => {
-    if (throttleTimer.current) return;
-    
-    throttleTimer.current = setTimeout(() => {
-      throttleTimer.current = null;
-    }, 16);
-    
-    if (!buttonRef.current) return;
-    const rect = buttonRef.current.getBoundingClientRect();
-    const x = (e.clientX - rect.left - rect.width / 2) * 0.2;
-    const y = (e.clientY - rect.top - rect.height / 2) * 0.2;
-    setPosition({ x, y });
-  };
-  
-  const handleMouseLeave = () => {
-    setPosition({ x: 0, y: 0 });
-  };
-  
-  const Element = href ? 'a' : 'button';
-  
-  return (
-    <Element
-      ref={buttonRef}
-      href={href}
-      onClick={onClick}
-      onMouseMove={handleMouseMove}
-      onMouseLeave={handleMouseLeave}
-      style={{
-        ...style,
-        transform: `translate(${position.x}px, ${position.y}px)`,
-        transition: 'transform 0.2s ease-out',
-        textDecoration: 'none'
-      }}
-    >
-      {children}
-    </Element>
-  );
-};
+import Badge from './components/Badge';
+import MagneticButton from './components/MagneticButton';
+import ParticleField from './components/ParticleField';
+import TypewriterText from './components/TypewriterText';
+import TerminalBlock from './components/TerminalBlock';
+import TiltCard from './components/TiltCard';
+import SkillGraph from './components/SkillGraph';
 
 const Portfolio = () => {
   const [scrollY, setScrollY] = useState(0);
@@ -1065,110 +615,191 @@ const Portfolio = () => {
             Featured Work
           </h2>
 
-          <div style={{ maxWidth: '900px', margin: '0 auto' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+          <div style={{ maxWidth: '1000px', margin: '0 auto' }}>
+            <div style={{ 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+              gap: '2rem'
+            }}>
               {projects.map((project, idx) => (
-                <TiltCard key={idx} style={{
-                  background: 'linear-gradient(135deg, rgba(0, 255, 200, 0.04), rgba(255, 20, 147, 0.04))',
-                  borderRadius: '16px',
-                  padding: '2rem',
-                  border: '1px solid rgba(0, 255, 200, 0.15)',
-                  overflow: 'hidden'
-                }}>
-                  {/* Project Image */}
+                <TiltCard 
+                  key={idx}
+                  style={{
+                    background: 'linear-gradient(135deg, rgba(0, 255, 200, 0.08), rgba(255, 20, 147, 0.08))',
+                    borderRadius: '16px',
+                    border: '1px solid rgba(0, 255, 200, 0.2)',
+                    overflow: 'hidden',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    boxShadow: '0 10px 40px rgba(0, 0, 0, 0.3)',
+                    backdropFilter: 'blur(10px)',
+                    transition: 'all 0.3s ease'
+                  }}
+                  className="project-card"
+                >
+                  {/* Project Image Container */}
                   <div style={{
                     width: '100%',
-                    height: 'auto',
-                    borderRadius: '12px',
+                    height: '220px',
                     overflow: 'hidden',
-                    marginBottom: '1.5rem',
-                    border: '1px solid rgba(0, 255, 200, 0.2)',
-                    position: 'relative'
-                  }}
-                  className="project-image">
+                    position: 'relative',
+                    background: 'linear-gradient(135deg, #1a1a2e, #0f0f1e)',
+                    border: '1px solid rgba(0, 255, 200, 0.1)'
+                  }}>
                     <img 
                       src={project.image} 
                       alt={project.title}
                       style={{
                         width: '100%',
                         height: '100%',
-                        objectFit: 'cover',
-                        transition: 'transform 0.3s ease'
+                        objectFit: 'contain',
+                        transition: 'transform 0.4s ease'
                       }}
-                      onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-                      onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+                      className="project-image"
                     />
+                    <div style={{
+                      position: 'absolute',
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      background: 'linear-gradient(180deg, transparent 0%, rgba(15, 15, 30, 0.8) 100%)',
+                      pointerEvents: 'none'
+                    }} />
+                    
+                    {/* Floating Period Badge */}
+                    <div style={{
+                      position: 'absolute',
+                      top: '1rem',
+                      right: '1rem',
+                      background: 'rgba(15, 15, 30, 0.9)',
+                      backdropFilter: 'blur(10px)',
+                      padding: '0.4rem 0.8rem',
+                      borderRadius: '8px',
+                      border: '1px solid rgba(255, 20, 147, 0.3)',
+                      color: '#ff1493',
+                      fontSize: '0.75rem',
+                      fontWeight: '600'
+                    }}>
+                      {project.period}
+                    </div>
                   </div>
 
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', flexWrap: 'wrap', gap: '1rem', marginBottom: '1rem' }}>
-                    <div>
-                      <h3 style={{ margin: 0, fontSize: '1.5rem', color: '#00ffc8' }} className="project-title">{project.title}</h3>
-                      <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.5rem', flexWrap: 'wrap' }}>
-                        <Badge variant="secondary">{project.period}</Badge>
-                        {project.badges.map((badge, i) => (
-                          <Badge key={i} variant="primary">{badge}</Badge>
-                        ))}
-                      </div>
-                    </div>
-                    
-                    {project.codeUrl && (
-                      <MagneticButton
-                        href={project.codeUrl}
-                        style={{
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          gap: '0.5rem',
-                          padding: '0.5rem 1rem',
-                          borderRadius: '8px',
-                          border: '1px solid rgba(0, 255, 200, 0.3)',
-                          background: 'transparent',
-                          color: '#00ffc8',
-                          fontWeight: '600',
-                          fontSize: '0.875rem'
-                        }}
-                      >
-                        <Code size={16} />
-                        View Code
-                      </MagneticButton>
-                    )}
-                  </div>
-                  
-                  <p style={{ color: '#e0e0e0', lineHeight: '1.7', marginBottom: '1rem' }}>
-                    {project.description}
-                  </p>
-                  
-                  <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
-                    {project.metrics.map((metric, i) => (
-                      <span key={i} style={{
-                        background: 'rgba(255, 165, 0, 0.12)',
-                        color: '#ffa500',
-                        padding: '0.25rem 0.75rem',
-                        borderRadius: '12px',
-                        fontSize: '0.8rem',
-                        border: '1px solid rgba(255, 165, 0, 0.2)',
-                        fontWeight: '600'
-                      }}>
-                        {metric}
-                      </span>
-                    ))}
-                  </div>
-                  
-                  <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
-                    {project.tech.map((t, i) => (
-                      <span key={i} style={{
-                        background: 'rgba(0, 255, 200, 0.12)',
+                  {/* Content Container */}
+                  <div style={{ 
+                    padding: '1.5rem', 
+                    display: 'flex', 
+                    flexDirection: 'column', 
+                    gap: '1rem',
+                    flex: 1,
+                    background: 'linear-gradient(135deg, rgba(0, 255, 200, 0.03), rgba(255, 20, 147, 0.03))'
+                  }}>
+                    {/* Title and Code Button */}
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', gap: '1rem' }}>
+                      <h3 style={{ 
+                        fontSize: '1.5rem', 
+                        fontWeight: 'bold', 
                         color: '#00ffc8',
-                        padding: '0.25rem 0.75rem',
-                        borderRadius: '12px',
-                        fontSize: '0.75rem',
-                        border: '1px solid rgba(0, 255, 200, 0.2)'
-                      }}>
-                        {t}
-                      </span>
-                    ))}
+                        margin: 0,
+                        lineHeight: '1.3'
+                      }}
+                      className="project-title">
+                        {project.title}
+                      </h3>
+                      
+                      {project.codeUrl && (
+                        <MagneticButton
+                          href={project.codeUrl}
+                          style={{
+                            padding: '0.5rem 0.75rem',
+                            borderRadius: '8px',
+                            border: '1px solid rgba(0, 255, 200, 0.3)',
+                            background: 'rgba(0, 255, 200, 0.05)',
+                            color: '#00ffc8',
+                            fontSize: '0.75rem',
+                            fontWeight: '600',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.5rem',
+                            textDecoration: 'none',
+                            cursor: 'pointer',
+                            whiteSpace: 'nowrap'
+                          }}
+                        >
+                          <Code size={14} />
+                          View
+                        </MagneticButton>
+                      )}
+                    </div>
+
+                    {/* Tech Badges */}
+                    <div style={{ display: 'flex', gap: '0.5rem', flexWrap: 'wrap' }}>
+                      {project.badges.map((badge, i) => (
+                        <Badge key={i} variant="primary">{badge}</Badge>
+                      ))}
+                    </div>
+
+                    {/* Description */}
+                    <p style={{ 
+                      color: '#aaa', 
+                      fontSize: '0.9rem', 
+                      lineHeight: '1.7',
+                      margin: 0,
+                      flex: 1
+                    }}>
+                      {project.description}
+                    </p>
+
+                    {/* Metrics Row */}
+                    <div style={{ 
+                      display: 'flex', 
+                      gap: '0.5rem', 
+                      flexWrap: 'wrap',
+                      paddingTop: '0.5rem',
+                      borderTop: '1px solid rgba(0, 255, 200, 0.1)'
+                    }}>
+                      {project.metrics.map((metric, i) => (
+                        <span 
+                          key={i}
+                          style={{
+                            background: 'rgba(255, 165, 0, 0.15)',
+                            color: '#ffa500',
+                            padding: '0.35rem 0.75rem',
+                            borderRadius: '12px',
+                            fontSize: '0.75rem',
+                            border: '1px solid rgba(255, 165, 0, 0.3)',
+                            fontWeight: '600'
+                          }}
+                        >
+                          {metric}
+                        </span>
+                      ))}
+                    </div>
+
+                    {/* Tech Stack */}
+                    <div style={{ 
+                      display: 'flex', 
+                      gap: '0.4rem', 
+                      flexWrap: 'wrap',
+                      paddingTop: '0.5rem'
+                    }}>
+                      {project.tech.map((t, i) => (
+                        <span 
+                          key={i}
+                          style={{
+                            background: 'rgba(0, 255, 200, 0.1)',
+                            color: '#00ffc8',
+                            padding: '0.25rem 0.6rem',
+                            borderRadius: '8px',
+                            fontSize: '0.7rem',
+                            border: '1px solid rgba(0, 255, 200, 0.2)'
+                          }}
+                        >
+                          {t}
+                        </span>
+                      ))}
+                    </div>
                   </div>
-                  
-                  {project.title === 'URL Shortener' && <LiveURLShortener />}
                 </TiltCard>
               ))}
             </div>
